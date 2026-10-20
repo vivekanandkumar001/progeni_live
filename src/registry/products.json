@@ -1,0 +1,99 @@
+[
+  {
+    "id": "prod-bench",
+    "slug": "bench",
+    "name": "Progeni Bench",
+    "shortDescription": "30+ private browser file, craft, media, and spreadsheet utilities running 100% locally with zero server uploads.",
+    "description": "Progeni Bench is a private, client-side toolkit designed for creators, crafters, and everyday desk workers. It features 30 focused utilities — including Avery label generators, sticker sheet makers, t-shirt mirror tools, cross-stitch chart creators, SRT subtitle speed auditors, contact CSV deduplication, and photo croppers. Every tool processes your files directly in browser memory using Web Workers, Canvas, and HTML5 APIs without sending a single byte to an external server.",
+    "categoryIds": ["cat-privacy-file", "cat-media", "cat-data", "cat-productivity"],
+    "tags": [
+      "bench",
+      "labels",
+      "avery 5160",
+      "sticker sheet",
+      "t-shirt mirror",
+      "subtitles",
+      "csv",
+      "vcard",
+      "cropper",
+      "zero-upload",
+      "client-side",
+      "crafts"
+    ],
+    "capabilities": [
+      "Avery 5160 / Custom Label Maker",
+      "Printable Sticker Sheet & Die-Line Maker",
+      "Heat-Transfer T-Shirt Print Mirror",
+      "Video Safe-Zone Checker (TikTok/Reels/Shorts)",
+      "Subtitle Reading-Speed & Line-Break Checker",
+      "Contact CSV Deduplicator & Normalizer",
+      "Wallpaper Photo Cropper & Panorama Splitter",
+      "100% In-Browser Zero Server Uploads"
+    ],
+    "status": "active",
+    "visibility": "public",
+    "hosting": "standalone",
+    "destination": {
+      "type": "subdomain",
+      "url": "https://bench.progeni.live/",
+      "canonicalUrl": "https://bench.progeni.live/"
+    },
+    "icon": "Wrench",
+    "featured": true,
+    "sortOrder": 1,
+    "seo": {
+      "title": "Progeni Bench — Free Private In-Browser File & Craft Tools",
+      "description": "Explore 30 private file tools in Progeni Bench: Avery label makers, sticker sheets, subtitle repair, and CSV cleaning with zero uploads.",
+      "indexable": true
+    },
+    "createdAt": "2024-09-15T00:00:00Z",
+    "updatedAt": "2026-10-15T00:00:00Z"
+  },
+  {
+    "id": "prod-wakit",
+    "slug": "wakit",
+    "name": "WaKit (WhatsSwift)",
+    "shortDescription": "Free client-side WhatsApp utilities: 30s status video splitter, direct unsaved chat, QR code generator, and 16MB audio compressor.",
+    "description": "WaKit (also known as WhatsSwift) provides high-performance WhatsApp productivity tools powered by WebAssembly. Users can split long videos into precise 30-second status clips using lossless FFmpeg stream copy, open direct chats with international phone numbers without saving contacts, generate scan-to-chat QR codes, and transcode audio recordings under WhatsApp's 16MB attachment ceiling. All computations run in the client sandbox with zero telemetry.",
+    "categoryIds": ["cat-communication", "cat-media"],
+    "tags": [
+      "wakit",
+      "whatsswift",
+      "whatsapp",
+      "status splitter",
+      "direct chat",
+      "qr code",
+      "audio compressor",
+      "16mb",
+      "ffmpeg",
+      "webassembly",
+      "messaging"
+    ],
+    "capabilities": [
+      "30-Second Status Video Splitter (Lossless WebAssembly)",
+      "Direct WhatsApp Chat Without Saving Numbers",
+      "Custom Scan-to-Chat & Wi-Fi QR Code Generator",
+      "Audio Compressor for 16MB WhatsApp Limit",
+      "Zero Server Uploads & Zero Storage",
+      "No Signup or Account Required"
+    ],
+    "status": "active",
+    "visibility": "public",
+    "hosting": "standalone",
+    "destination": {
+      "type": "subdomain",
+      "url": "https://wakit.progeni.live/",
+      "canonicalUrl": "https://wakit.progeni.live/"
+    },
+    "icon": "MessageCircle",
+    "featured": true,
+    "sortOrder": 2,
+    "seo": {
+      "title": "WaKit — Free Private WhatsApp Utilities in Your Browser",
+      "description": "Split 30s status videos, send direct WhatsApp messages without saving numbers, and compress audio files to 16MB locally via WebAssembly.",
+      "indexable": true
+    },
+    "createdAt": "2024-10-01T00:00:00Z",
+    "updatedAt": "2026-10-18T00:00:00Z"
+  }
+]

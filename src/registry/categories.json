@@ -1,0 +1,56 @@
+[
+  {
+    "id": "cat-privacy-file",
+    "slug": "privacy-file-tools",
+    "name": "Private File & Craft Tools",
+    "description": "100% in-browser utilities for sticker sheets, labels, cross-stitch, embroidery, and private file adjustments with zero cloud uploads.",
+    "icon": "Layers",
+    "sortOrder": 1,
+    "visibility": "public"
+  },
+  {
+    "id": "cat-communication",
+    "slug": "communication-messaging",
+    "name": "Communication & Messaging",
+    "description": "Frictionless messaging tools, WhatsApp status splitters, direct number chat, link generators, and zero-telemetry utilities.",
+    "icon": "MessageSquare",
+    "sortOrder": 2,
+    "visibility": "public"
+  },
+  {
+    "id": "cat-media",
+    "slug": "media-audio-video",
+    "name": "Media, Audio & Video",
+    "description": "Client-side audio compression, podcast silence mapping, video safe-zone checkers, and frame extraction.",
+    "icon": "Film",
+    "sortOrder": 3,
+    "visibility": "public"
+  },
+  {
+    "id": "cat-data",
+    "slug": "developer-data",
+    "name": "Data & Spreadsheets",
+    "description": "Local contact deduplication, CSV column splitters, date normalization, and vCard management without external servers.",
+    "icon": "Database",
+    "sortOrder": 4,
+    "visibility": "public"
+  },
+  {
+    "id": "cat-productivity",
+    "slug": "productivity",
+    "name": "Productivity & Calendar",
+    "description": "Calendar iCal deduplication, timetable to calendar generators, and offline bookmark reading lists.",
+    "icon": "Calendar",
+    "sortOrder": 5,
+    "visibility": "public"
+  },
+  {
+    "id": "cat-ai",
+    "slug": "ai-experiences",
+    "name": "AI & Smart Tools",
+    "description": "Next-generation intelligent assistants and cognitive workflows within the Progeni ecosystem.",
+    "icon": "Sparkles",
+    "sortOrder": 6,
+    "visibility": "public"
+  }
+]
