@@ -2,11 +2,12 @@ import React from 'react';
 import { Clock } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 import { getPublicProducts } from '../registry/selectors';
+import { formatCalendarDate } from '../lib/dates';
 import { useSeo } from '../lib/seo';
 
 const NewPage: React.FC = () => {
   useSeo({
-    title: 'What\u2019s New',
+    title: 'What\u2019s New — The Latest Tools on Progeni',
     description:
       'The newest tools added to the Progeni collection, listed by launch date.',
     canonicalPath: '/new',
@@ -35,8 +36,7 @@ const NewPage: React.FC = () => {
                 <ProductCard product={product} />
                 <p className="flex items-center gap-1.5 px-1 text-xs text-slate-500">
                   <Clock className="h-3 w-3" aria-hidden="true" />
-                  Added{' '}
-                  {new Date(product.createdAt).toLocaleDateString('en-US', {
+                  Added {formatCalendarDate(product.createdAt, {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',

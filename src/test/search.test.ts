@@ -103,4 +103,20 @@ describe('searchCatalog', () => {
     expect(results.length).toBeGreaterThan(0);
     expect(results[0].product.slug).toBe('wakit');
   });
+
+  it('respects minQueryLength so a single letter matches nothing', () => {
+    expect(searchCatalog('a', { minQueryLength: 2 })).toEqual([]);
+  });
+
+  it('still matches a single letter when no minimum is requested', () => {
+    // The /tools grid filters as you type, so a one-character query must
+    // still return something there.
+    expect(searchCatalog('a').length).toBeGreaterThan(0);
+  });
+
+  it('ranks a whole-word match above a mid-word match', () => {
+    const results = searchCatalog('label');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].product.slug).toBe('bench');
+  });
 });

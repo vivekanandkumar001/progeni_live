@@ -5,11 +5,11 @@ import SearchBox from '../components/search/SearchBox';
 import { ProductCard } from '../components/ProductCard';
 import { searchCatalog } from '../lib/search';
 import { getPublicCategories } from '../registry/selectors';
-import { useSeo } from '../lib/seo';
+import { useSeo, useJsonLd } from '../lib/seo';
 
 const ToolsPage: React.FC = () => {
   useSeo({
-    title: 'All Tools',
+    title: 'All Tools — Free Browser-Based Utilities',
     description:
       'Browse every tool in the Progeni collection. Search or filter by category to find exactly what you need.',
     canonicalPath: '/tools',
@@ -25,6 +25,24 @@ const ToolsPage: React.FC = () => {
     () => searchCatalog(query, { categorySlug }),
     [query, categorySlug]
   );
+
+  // ItemList: describes the catalogue as a list of individual tools so search
+  // engines can understand the collection rather than one anonymous page.
+  useJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'All Progeni Tools',
+    description:
+      'Browse every tool in the Progeni collection. Search or filter by category to find exactly what you need.',
+    url: 'https://progeni.live/tools',
+    numberOfItems: results.length,
+    itemListElement: results.map((result, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: result.product.name,
+      url: `https://progeni.live/tools/${result.product.slug}`,
+    })),
+  });
 
   const setCategory = (slug: string) => {
     const next = new URLSearchParams(searchParams);
@@ -111,7 +129,7 @@ const ToolsPage: React.FC = () => {
           </h2>
           <p className="mt-2 max-w-md text-sm text-slate-600">
             {query
-              ? `We don't have anything for “${query}”${categorySlug !== 'all' ? ' in this category' : ''} yet. Try another word, or browse everything.`
+              ? `We don’t have anything for “${query}”${categorySlug !== 'all' ? ' in this category' : ''} yet. Try another word, or browse everything.`
               : 'There are no tools in this category yet. Check back soon.'}
           </p>
           <div className="mt-6 flex gap-3">

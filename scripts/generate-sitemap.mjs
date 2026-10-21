@@ -19,32 +19,55 @@ const categories = JSON.parse(readFileSync(join(root, 'src/registry/categories.j
 
 const BASE = 'https://progeni.live';
 
+/** Formats an ISO timestamp as the YYYY-MM-DD date Google expects. */
+function toDate(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString().slice(0, 10);
+}
+
 const publicCategories = categories.filter((c) => c.visibility === 'public');
 const publicProducts = products.filter(
   (p) => p.visibility === 'public' && p.status !== 'deprecated'
 );
 
+// The most recent change anywhere in the registry. Static pages have no
+// per-page timestamp of their own, so this is the honest upper bound for
+// "when did this content last change".
+const latestUpdate = publicProducts
+  .map((p) => toDate(p.updatedAt))
+  .filter(Boolean)
+  .sort()
+  .pop();
+
 const urls = [];
 
 // Static routes
 urls.push(
-  { loc: `${BASE}/`, priority: '1.0', changefreq: 'daily' },
-  { loc: `${BASE}/tools`, priority: '0.9', changefreq: 'daily' },
-  { loc: `${BASE}/new`, priority: '0.7', changefreq: 'weekly' },
-  { loc: `${BASE}/about`, priority: '0.6', changefreq: 'monthly' },
-  { loc: `${BASE}/contact`, priority: '0.5', changefreq: 'monthly' },
-  { loc: `${BASE}/privacy`, priority: '0.4', changefreq: 'monthly' },
-  { loc: `${BASE}/terms`, priority: '0.4', changefreq: 'monthly' }
+  { loc: `${BASE}/`, priority: '1.0', changefreq: 'daily', lastmod: latestUpdate },
+  { loc: `${BASE}/tools`, priority: '0.9', changefreq: 'daily', lastmod: latestUpdate },
+  { loc: `${BASE}/new`, priority: '0.7', changefreq: 'weekly', lastmod: latestUpdate },
+  { loc: `${BASE}/about`, priority: '0.6', changefreq: 'monthly', lastmod: latestUpdate },
+  { loc: `${BASE}/contact`, priority: '0.5', changefreq: 'monthly', lastmod: latestUpdate },
+  { loc: `${BASE}/privacy`, priority: '0.4', changefreq: 'monthly', lastmod: latestUpdate },
+  { loc: `${BASE}/terms`, priority: '0.4', changefreq: 'monthly', lastmod: latestUpdate }
 );
 
 // Categories that contain at least one public product
 for (const category of publicCategories) {
-  const hasProducts = publicProducts.some((p) => p.categoryIds.includes(category.id));
-  if (!hasProducts) continue;
+  const categoryProducts = publicProducts.filter((p) =>
+    p.categoryIds.includes(category.id)
+  );
+  if (categoryProducts.length === 0) continue;
+  const lastmod = categoryProducts
+    .map((p) => toDate(p.updatedAt))
+    .filter(Boolean)
+    .sort()
+    .pop();
   urls.push({
     loc: `${BASE}/categories/${category.slug}`,
     priority: '0.8',
     changefreq: 'weekly',
+    lastmod,
   });
 }
 
@@ -57,6 +80,7 @@ for (const product of publicProducts) {
     loc: `${BASE}/tools/${product.slug}`,
     priority: product.featured ? '0.85' : '0.7',
     changefreq: 'weekly',
+    lastmod: toDate(product.updatedAt),
   });
 }
 
@@ -65,7 +89,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
 ${urls
   .map(
     (u) => `  <url>
-    <loc>${u.loc}</loc>
+    <loc>${u.loc}</loc>${u.lastmod ? `\n    <lastmod>${u.lastmod}</lastmod>` : ''}
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
   </url>`

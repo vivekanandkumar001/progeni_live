@@ -10,6 +10,13 @@ export interface SearchResult {
 export interface SearchOptions {
   categorySlug?: string;
   minScore?: number;
+  /**
+   * Minimum number of characters a query must have before it is treated as a
+   * real search. A single letter matches nearly every description, which makes
+   * the suggestion list useless noise, so callers that render a live dropdown
+   * raise this to 2. Defaults to 1 (no restriction) for grid filtering.
+   */
+  minQueryLength?: number;
 }
 
 /**
@@ -25,6 +32,20 @@ export function normalizeText(text: string): string {
 }
 
 /**
+ * True when `needle` appears in `haystack` as a whole word.
+ *
+ * Text is normalized before it reaches this helper, so words are separated by
+ * spaces or hyphens. This lets a query like "label" rank a product with an
+ * "Avery Label Maker" capability above one that merely mentions the word
+ * mid-sentence.
+ */
+function hasWordMatch(haystack: string, needle: string): boolean {
+  if (!needle) return false;
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(^|[\\s-])${escaped}($|[\\s-])`).test(haystack);
+}
+
+/**
  * Searches public products with intelligent weighted relevance ranking.
  */
 export function searchCatalog(
@@ -34,6 +55,8 @@ export function searchCatalog(
   const normQuery = normalizeText(query);
   const publicProducts = getPublicProducts();
   const publicCategories = getPublicCategories();
+
+  const minQueryLength = options.minQueryLength ?? 1;
 
   // Create a quick lookup map of category ID to category
   const categoryMap = new Map<string, Category>();
@@ -63,6 +86,12 @@ export function searchCatalog(
       score: 100 - p.sortOrder,
       matchedField: 'all',
     }));
+  }
+
+  // A query shorter than the caller's minimum is not a real search yet, so it
+  // matches nothing rather than everything.
+  if (normQuery.length < minQueryLength) {
+    return [];
   }
 
   const queryTokens = normQuery.split(' ').filter(Boolean);
@@ -160,6 +189,16 @@ export function searchCatalog(
     // Bonus if all query tokens matched somewhere
     if (queryTokens.length > 1 && tokenMatches === queryTokens.length) {
       score += 100;
+    }
+
+    // 9. Whole-word bonus — a boundary match is far more likely to be what
+    //    the person meant than a mid-word substring hit.
+    if (
+      hasWordMatch(normName, normQuery) ||
+      normTags.some((t) => hasWordMatch(t, normQuery)) ||
+      normCapabilities.some((c) => hasWordMatch(c, normQuery))
+    ) {
+      score += 150;
     }
 
     // Boost featured products slightly for tie-breaking

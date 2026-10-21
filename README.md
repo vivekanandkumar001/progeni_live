@@ -18,10 +18,10 @@ their own subdomains; this site links to them.
 ## Tech stack
 
 - React 18 + TypeScript + Vite
-- Tailwind CSS (dark-first design system)
+- Tailwind CSS (light-only design system — the site ships one light theme)
 - React Router v6 (client-side routing)
 - Zod (registry validation)
-- Vitest + React Testing Library (77 tests)
+- Vitest + React Testing Library (110 tests)
 - Lucide icons (explicitly imported to keep the bundle tree-shaken)
 
 ## Quick start
@@ -49,18 +49,21 @@ src/
   lib/
     search.ts          # ranked keyword search (behind a swappable interface)
     destinations.ts    # safe destination resolution (scheme checks, fallbacks)
-    seo.ts             # per-route meta title/description/canonical/OG updates
+    seo.ts             # per-route meta title/description/canonical/OG + JSON-LD
+    dates.ts           # timezone-stable calendar date formatting
   components/
     layout/            # Header (responsive nav), Footer, Layout
     search/SearchBox.tsx  # universal search with suggestions + keyboard nav
     ProductCard.tsx    # registry-driven product card
     CategoryCard.tsx   # registry-driven category card
     Badge.tsx          # status badges (active/beta/development/…)
-  pages/               # Route components (/, /tools, /tools/:slug, …)
-  test/                # Vitest suites (registry, search, selectors, UI)
+  pages/               # Route components (/, /tools, /tools/:slug,
+                       # /categories/:slug, /new, /about, /contact,
+                       # /privacy, /terms, *)
+  test/                # Vitest suites (registry, search, selectors, UI, SEO)
 scripts/
   generate-sitemap.mjs # sitemap generated from the registry on every build
-public/                # favicon, robots.txt, generated sitemap.xml
+public/                # favicon, robots.txt, og-image.jpg, generated sitemap.xml
 ```
 
 **Separation of concerns:** product data, validation, search, destination
@@ -88,6 +91,10 @@ section reads from the registry.
     "type": "subdomain",             // subdomain | path | external
     "url": "https://example.progeni.live/"
   },
+  "supportUrl": "https://example.progeni.live/contact", // optional; omit if the
+                                                         // product has no contact
+                                                         // page (the /contact page
+                                                         // then falls back to email)
   "icon": "Wrench",                  // must be in the icon allow-list
   "featured": true,
   "sortOrder": 10,
@@ -126,8 +133,13 @@ Pages, etc.):
 2. Publish the `dist/` directory.
 3. SPA fallback: all routes must rewrite to `index.html` (all major hosts
    support this via a `_redirects` file, `vercel.json`, or equivalent).
+   This repo ships `vercel.json` with the rewrite — without it every
+   client-side route returns 404 on Vercel.
 4. Bind the `progeni.live` apex and `www` — **do not touch the existing
    `bench.progeni.live` or `wakit.progeni.live` DNS records.**
+   Note: `www.progeni.live` currently has no DNS record; either add one that
+   redirects to the apex, or drop `www` from the "must bind" list so the
+   two hostnames are not competing for the same content.
 
 ### Rollback
 
@@ -139,10 +151,25 @@ Pages, etc.):
 
 - Unique title/description/canonical per route (set client-side in `seo.ts`;
   `index.html` carries homepage defaults for crawlers that do not execute JS).
+  The homepage description in `index.html` and in `HomePage.tsx` must stay
+  byte-identical — social scrapers read the static one, Google reads the
+  rendered one.
+- `seo.ts` writes tags in a `useLayoutEffect`, not `useEffect`. Passive
+  effects are deferred until after paint, which leaves a window where the
+  `<head>` still holds the previous route's title and canonical.
+- JSON-LD structured data is emitted per route: `WebSite` + `SearchAction` on
+  the homepage, `ItemList` on `/tools`, `WebApplication` + `BreadcrumbList` on
+  tool pages, and `CollectionPage` + `BreadcrumbList` on category pages.
+- Soft-404 protection: 404 routes, missing products, missing categories and
+  empty categories emit `robots: noindex,follow` and a self-referencing
+  canonical, so they are never indexed as duplicates of a live page.
 - `public/sitemap.xml` is generated from the registry on every build —
   private, unlisted, deprecated, and `indexable: false` products never appear.
+  Every URL carries a `<lastmod>` date.
 - `public/robots.txt` disallows `/admin` and references the sitemap.
 - Standalone products keep their own canonical URLs on their subdomains.
+- `public/og-image.jpg` is a real 1200×630 JPEG. SVG social preview images
+  render blank in most scrapers.
 
 ## Security notes
 
@@ -158,11 +185,17 @@ Pages, etc.):
 
 - Search is client-side (appropriate for the current catalog size) but is
   isolated behind `searchCatalog()` so a dedicated index can replace it later.
+  Live suggestions require at least two characters — a single letter matches
+  nearly every description and produces a useless dropdown.
 - SEO metadata is applied client-side; a prerender/SSG pass (e.g. vite-ssg)
   would improve crawl fidelity for JS-executing crawlers. `index.html` already
   carries correct homepage metadata as a baseline.
-- Per-product contact pages are linked as `{product}/contact` by convention;
-  verify each product actually exposes that route.
+- Fonts are loaded from Google Fonts, which is a third-party request that
+  exposes the visitor's IP address to Google. Self-hosting the two families
+  would remove it; the privacy policy discloses it in the meantime.
+- Per-product contact pages are linked through the optional `supportUrl`
+  field; products without one fall back to `mailto:support@progeni.live`.
+  Do not link `{product}/contact` unless that route actually exists.
 - No ESLint config is present yet (`tsc` + tests cover correctness today).
 - The `/admin` route mentioned in the roadmap is intentionally not implemented
   (never ship an unsecured admin panel).

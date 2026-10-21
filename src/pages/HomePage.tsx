@@ -16,21 +16,54 @@ import {
   getCategoriesWithCounts,
   getRecentlyLaunched,
 } from '../registry/selectors';
-import { useSeo } from '../lib/seo';
+import { useSeo, useJsonLd } from '../lib/seo';
 
 const HomePage: React.FC = () => {
   useSeo({
     title: 'Progeni — Discover digital tools for whatever you need to do',
+    // Must stay byte-identical to the static description in index.html: social
+    // scrapers and crawlers that do not execute JavaScript read that one.
     description:
-      'One Platform. Many Possibilities. Discover useful digital tools and services that help you get things done.',
+      'One Platform. Many Possibilities. Discover useful digital tools and services that help you get things done — no sign-ups, no complicated setup.',
     canonicalPath: '/',
+  });
+
+  // WebSite + SearchAction: this is what makes Progeni eligible for the
+  // Google sitelinks search box, and tells search engines the site really is
+  // a collection of tools rather than a blog.
+  useJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Progeni',
+    url: 'https://progeni.live/',
+    description:
+      'One Platform. Many Possibilities. Discover useful digital tools and services that help you get things done — no sign-ups, no complicated setup.',
+    inLanguage: 'en-US',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://progeni.live/tools?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
   });
 
   const featured = getFeaturedProducts();
   const allProducts = getPublicProducts();
   const categories = getCategoriesWithCounts().filter((c) => c.count > 0);
-  const recent = getRecentlyLaunched(3).filter((p) => !p.featured);
-  const preview = allProducts.slice(0, 4);
+
+  // Every product appears exactly once on the homepage. Taking the newest
+  // products first and then filtering out featured ones means a catalog where
+  // everything is featured would otherwise repeat the same cards in
+  // "Featured Tools", "Just Added" and "All Tools" — duplicate content for
+  // crawlers, and noise for visitors.
+  const featuredIds = new Set(featured.map((p) => p.id));
+  const recent = getRecentlyLaunched(3).filter((p) => !featuredIds.has(p.id));
+  const recentIds = new Set(recent.map((p) => p.id));
+  const preview = allProducts
+    .filter((p) => !featuredIds.has(p.id) && !recentIds.has(p.id))
+    .slice(0, 4);
 
   return (
     <>
@@ -59,7 +92,7 @@ const HomePage: React.FC = () => {
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
             <Link to="/tools" className="btn-primary">
-              Explore All Services
+              Explore All Tools
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link to="/about" className="btn-secondary">
@@ -78,7 +111,7 @@ const HomePage: React.FC = () => {
               Featured Tools
             </h2>
             <p className="section-subtitle">
-              A few of our favourites, ready to use right now.
+              A few of our favorites, ready to use right now.
             </p>
             <div className="mt-8 grid gap-6 sm:grid-cols-2">
               {featured.map((product) => (
@@ -136,39 +169,41 @@ const HomePage: React.FC = () => {
         </section>
       )}
 
-      {/* All services preview */}
-      <section aria-labelledby="services-heading" className="border-b border-slate-200 bg-white py-16 sm:py-20">
-        <div className="page-container">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <h2 id="services-heading" className="section-title">
-                All Tools
-              </h2>
-              <p className="section-subtitle">
-                Everything available right now, in one place.
-              </p>
+      {/* More services preview */}
+      {preview.length > 0 && (
+        <section aria-labelledby="services-heading" className="border-b border-slate-200 bg-white py-16 sm:py-20">
+          <div className="page-container">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <h2 id="services-heading" className="section-title">
+                  More Tools
+                </h2>
+                <p className="section-subtitle">
+                  A few more from the collection, ready to use.
+                </p>
+              </div>
+              <Link
+                to="/tools"
+                className="hidden shrink-0 items-center gap-1 text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700 sm:flex"
+              >
+                Browse all
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
-            <Link
-              to="/tools"
-              className="hidden shrink-0 items-center gap-1 text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700 sm:flex"
-            >
-              Browse all
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {preview.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            <div className="mt-8 text-center sm:hidden">
+              <Link to="/tools" className="btn-primary">
+                Browse All Tools
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
           </div>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {preview.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-          <div className="mt-8 text-center sm:hidden">
-            <Link to="/tools" className="btn-primary">
-              Browse All Tools
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* About */}
       <section aria-labelledby="about-heading" className="py-16 sm:py-20">

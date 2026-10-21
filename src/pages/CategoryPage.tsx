@@ -5,24 +5,78 @@ import { ProductCard } from '../components/ProductCard';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { IconRenderer } from '../components/IconRenderer';
 import { getCategoryBySlug, getProductsByCategorySlug } from '../registry/selectors';
-import { useSeo } from '../lib/seo';
+import { useSeo, useJsonLd } from '../lib/seo';
 import NotFoundPage from './NotFoundPage';
 
 const CategoryPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = slug ? getCategoryBySlug(slug) : undefined;
+  const products = category ? getProductsByCategorySlug(category.slug) : [];
 
   useSeo({
     title: category ? `${category.name} — Progeni Tools` : 'Category Not Found',
     description: category?.description || 'This category could not be found.',
-    canonicalPath: category ? `/categories/${category.slug}` : '/tools',
+    canonicalPath: category ? `/categories/${category.slug}` : `/categories/${slug ?? ''}`,
+    // Missing categories, and categories with no tools in them yet, must not
+    // be indexed — an empty category page is thin content with nothing for a
+    // visitor to do.
+    robots: category && products.length > 0 ? 'index,follow' : 'noindex,follow',
   });
 
-  if (!category) {
-    return <NotFoundPage message={`We couldn't find a category called “${slug}”.`} />;
-  }
+  // CollectionPage + BreadcrumbList. Kept above the early return below so the
+  // hook order is identical for every render. An empty (noindex) category
+  // gets no structured data, because it describes nothing.
+  useJsonLd(
+    category && products.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'CollectionPage',
+              name: `${category.name} — Progeni Tools`,
+              description: category.description,
+              url: `https://progeni.live/categories/${category.slug}`,
+              isPartOf: {
+                '@type': 'WebSite',
+                name: 'Progeni',
+                url: 'https://progeni.live/',
+              },
+              mainEntity: {
+                '@type': 'ItemList',
+                numberOfItems: products.length,
+                itemListElement: products.map((product, index) => ({
+                  '@type': 'ListItem',
+                  position: index + 1,
+                  name: product.name,
+                  url: `https://progeni.live/tools/${product.slug}`,
+                })),
+              },
+            },
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                {
+                  '@type': 'ListItem',
+                  position: 1,
+                  name: 'All Tools',
+                  item: 'https://progeni.live/tools',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 2,
+                  name: category.name,
+                  item: `https://progeni.live/categories/${category.slug}`,
+                },
+              ],
+            },
+          ],
+        }
+      : null
+  );
 
-  const products = getProductsByCategorySlug(category.slug);
+  if (!category) {
+    return <NotFoundPage message={`We couldn’t find a category called “${slug}”.`} />;
+  }
 
   return (
     <div className="page-container py-12 sm:py-16">
@@ -59,9 +113,14 @@ const CategoryPage: React.FC = () => {
           <p className="text-slate-600">
             There are no tools in this category yet. Check back soon.
           </p>
-          <Link to="/tools" className="btn-secondary mt-6">
-            Browse all tools
-          </Link>
+          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link to="/tools" className="btn-secondary">
+              Browse all tools
+            </Link>
+            <Link to="/contact" className="btn-secondary">
+              Suggest a tool
+            </Link>
+          </div>
         </div>
       )}
 

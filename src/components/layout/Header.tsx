@@ -10,7 +10,7 @@ interface HeaderProps {
 
 const navLinks = [
   { to: '/', label: 'Home', end: true },
-  { to: '/tools', label: 'All Services', end: false },
+  { to: '/tools', label: 'All Tools', end: false },
   { to: '/new', label: 'New', end: false },
   { to: '/about', label: 'About', end: false },
 ];
@@ -97,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
               className="mt-1 flex items-center gap-2 rounded-lg bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-700 transition-colors hover:bg-indigo-100"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
-              Search services
+              Search tools
             </NavLink>
           </div>
         </nav>

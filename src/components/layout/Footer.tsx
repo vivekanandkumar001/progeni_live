@@ -22,9 +22,9 @@ const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* Products */}
-          <nav aria-label="Products">
-            <h2 className="text-sm font-semibold text-slate-900">Products</h2>
+          {/* Tools */}
+          <nav aria-label="Tools">
+            <h2 className="text-sm font-semibold text-slate-900">Tools</h2>
             <ul className="mt-3 space-y-2.5">
               {products.map((product) => (
                 <li key={product.id}>
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
             <ul className="mt-3 space-y-2.5">
               <li>
                 <Link to="/tools" className="text-sm text-slate-600 transition-colors hover:text-indigo-700">
-                  All Services
+                  All Tools
                 </Link>
               </li>
               <li>

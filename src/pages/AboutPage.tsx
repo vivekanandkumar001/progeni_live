@@ -6,7 +6,7 @@ import { useSeo } from '../lib/seo';
 
 const AboutPage: React.FC = () => {
   useSeo({
-    title: 'About Progeni',
+    title: 'About Progeni — Free Browser-Based Tools',
     description:
       'Progeni brings useful digital tools together in one friendly place, so finding the right tool is simple.',
     canonicalPath: '/about',

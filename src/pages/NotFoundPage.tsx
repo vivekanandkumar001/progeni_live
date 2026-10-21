@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Compass, ArrowRight } from 'lucide-react';
 import { useSeo } from '../lib/seo';
 
@@ -8,10 +8,18 @@ interface NotFoundPageProps {
 }
 
 const NotFoundPage: React.FC<NotFoundPageProps> = ({ message }) => {
+  const { pathname } = useLocation();
+
   useSeo({
     title: 'Page Not Found',
     description: 'We could not find the page you were looking for.',
-    canonicalPath: '/404',
+    // Canonicalise to the URL that was actually requested. Pointing at a
+    // "/404" route would reference a URL that does not exist, and pointing
+    // at a live page would tell Google to merge this into it. Combined with
+    // noindex, a self-referencing canonical is the honest signal.
+    canonicalPath: pathname,
+    // A 404 must never be indexed, and must not canonicalise to a real page.
+    robots: 'noindex,follow',
   });
 
   return (

@@ -5,7 +5,7 @@ import { useSeo } from '../lib/seo';
 
 const PrivacyPage: React.FC = () => {
   useSeo({
-    title: 'Privacy',
+    title: 'Privacy Policy — Progeni',
     description:
       'Your files stay on your device. Here is how Progeni handles your information in plain language.',
     canonicalPath: '/privacy',
@@ -42,6 +42,20 @@ const PrivacyPage: React.FC = () => {
               our hosting provider may process basic technical information
               (such as your IP address) to deliver pages to you, under their
               own privacy policy.
+            </p>
+          </section>
+
+          <section aria-labelledby="fonts-and-hosting">
+            <h2 id="fonts-and-hosting" className="text-lg font-bold text-slate-900">
+              Fonts and hosting
+            </h2>
+            <p className="mt-3">
+              The site&rsquo;s fonts are loaded from Google&rsquo;s font
+              service, which means your browser makes a request to Google and
+              Google sees your IP address. If you would rather avoid that, a
+              content blocker or a privacy-focused browser extension will stop
+              the fonts from loading — the site still works, using your
+              device&rsquo;s built-in fonts instead.
             </p>
           </section>
 

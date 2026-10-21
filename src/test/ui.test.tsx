@@ -18,7 +18,7 @@ describe('HomePage', () => {
   it('renders the hero headline and search input', () => {
     renderAt('/');
     expect(screen.getByRole('heading', { level: 1, name: /one platform/i })).toBeInTheDocument();
-    expect(screen.getByRole('searchbox', { name: /search services/i })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /search tools/i })).toBeInTheDocument();
   });
 
   it('renders the Progeni logo in the header and footer', () => {
@@ -125,14 +125,14 @@ describe('Navigation & routing', () => {
   it('navigates from home to the tools directory via header link', async () => {
     const user = userEvent.setup();
     renderAt('/');
-    await user.click(screen.getAllByRole('link', { name: 'All Services' })[0]);
+    await user.click(screen.getAllByRole('link', { name: 'All Tools' })[0]);
     expect(screen.getByRole('heading', { name: 'All Tools', level: 1 })).toBeInTheDocument();
   });
 
   it('shows search suggestions while typing and navigates on click', async () => {
     const user = userEvent.setup();
     renderAt('/');
-    const searchbox = screen.getByRole('searchbox', { name: /search services/i });
+    const searchbox = screen.getByRole('combobox', { name: /search tools/i });
     await user.type(searchbox, 'bench');
     const suggestion = await screen.findByRole('option');
     await user.click(within(suggestion).getByRole('button', { name: /progeni bench/i }));
@@ -142,7 +142,7 @@ describe('Navigation & routing', () => {
   it('supports keyboard navigation through suggestions', async () => {
     const user = userEvent.setup();
     renderAt('/');
-    const searchbox = screen.getByRole('searchbox', { name: /search services/i });
+    const searchbox = screen.getByRole('combobox', { name: /search tools/i });
     await user.type(searchbox, 'bench');
     await screen.findByRole('option');
     await user.keyboard('{ArrowDown}');

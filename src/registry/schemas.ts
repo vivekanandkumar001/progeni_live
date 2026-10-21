@@ -44,6 +44,12 @@ export const ProductSchema = z.object({
   visibility: ProductVisibilitySchema,
   hosting: ProductHostingSchema,
   destination: DestinationSchema,
+  /**
+   * Optional dedicated support page for this product. Only set this when the
+   * URL is known to exist — the contact page links to it directly, and a dead
+   * link there is worse than no link at all.
+   */
+  supportUrl: z.string().url().optional(),
   icon: z.string().min(1, 'Icon identifier is required'),
   featured: z.boolean().default(false),
   sortOrder: z.number().default(100),

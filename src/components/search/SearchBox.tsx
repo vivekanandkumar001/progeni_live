@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useId } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { searchCatalog } from '../../lib/search';
@@ -30,9 +30,24 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const suggestions = query.trim().length > 0
-    ? searchCatalog(query).slice(0, 5).map((r) => r.product)
-    : [];
+  // Stable, DOM-safe ids so the combobox can point at its listbox and the
+  // active option. React's useId() output can contain colons, which are not
+  // safe to use as CSS selectors, so they are stripped here.
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
+  const inputId = `progeni-search-${uid}`;
+  const listboxId = `${inputId}-listbox`;
+
+  // A single character matches almost every description, so the dropdown would
+  // just list the whole catalog. Wait for at least two characters before
+  // offering suggestions.
+  const MIN_SUGGESTION_LENGTH = 2;
+  const trimmedQuery = query.trim();
+  const suggestions =
+    trimmedQuery.length >= MIN_SUGGESTION_LENGTH
+      ? searchCatalog(query, { minQueryLength: MIN_SUGGESTION_LENGTH })
+          .slice(0, 5)
+          .map((r) => r.product)
+      : [];
 
   // Close suggestions on outside click
   useEffect(() => {
@@ -100,10 +115,20 @@ const SearchBox: React.FC<SearchBoxProps> = ({
           />
           <input
             ref={inputRef}
+            id={inputId}
             type="search"
             value={query}
             autoFocus={autoFocus}
-            aria-label="Search services"
+            role="combobox"
+            aria-label="Search tools"
+            aria-autocomplete="list"
+            aria-expanded={showSuggestions && suggestions.length > 0}
+            aria-controls={listboxId}
+            aria-activedescendant={
+              activeIndex >= 0 && showSuggestions ? `${listboxId}-option-${activeIndex}` : undefined
+            }
+            autoComplete="off"
+            spellCheck={false}
             placeholder="What would you like to do today?"
             className={`w-full border border-slate-300 bg-white text-slate-900 shadow-sm placeholder-slate-400 transition-colors focus:border-indigo-500 focus:outline-none ${inputSize}`}
             onChange={(e) => {
@@ -144,12 +169,18 @@ const SearchBox: React.FC<SearchBoxProps> = ({
       {/* Live suggestions */}
       {showSuggestions && suggestions.length > 0 && (
         <ul
+          id={listboxId}
           role="listbox"
           aria-label="Search suggestions"
           className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
         >
           {suggestions.map((product, index) => (
-            <li key={product.id} role="option" aria-selected={index === activeIndex}>
+            <li
+              key={product.id}
+              id={`${listboxId}-option-${index}`}
+              role="option"
+              aria-selected={index === activeIndex}
+            >
               <button
                 type="button"
                 className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
@@ -176,9 +207,22 @@ const SearchBox: React.FC<SearchBoxProps> = ({
       )}
 
       {/* No matches yet */}
-      {showSuggestions && query.trim().length > 0 && suggestions.length === 0 && (
-        <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-lg">
-          No tools match &ldquo;{query.trim()}&rdquo;. Press Enter to search anyway.
+      {showSuggestions &&
+        trimmedQuery.length > 0 &&
+        trimmedQuery.length >= MIN_SUGGESTION_LENGTH &&
+        suggestions.length === 0 && (
+          <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-lg">
+            No tools match &ldquo;{trimmedQuery}&rdquo;. Press Enter to search anyway.
+          </div>
+        )}
+
+      {/* Too-short query */}
+      {showSuggestions && trimmedQuery.length === 1 && (
+        <div
+          role="status"
+          className="absolute z-50 mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-lg"
+        >
+          Keep typing &mdash; suggestions start at {MIN_SUGGESTION_LENGTH} characters.
         </div>
       )}
     </div>

@@ -3,10 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import { ExternalLink, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { getProductBySlug, getPublicCategories } from '../registry/selectors';
 import { resolveDestination } from '../lib/destinations';
+import { formatCalendarDate } from '../lib/dates';
 import { IconRenderer } from '../components/IconRenderer';
 import { StatusBadge } from '../components/Badge';
 import { Breadcrumb } from '../components/Breadcrumb';
-import { useSeo } from '../lib/seo';
+import { useSeo, useJsonLd } from '../lib/seo';
 import NotFoundPage from './NotFoundPage';
 
 const ProductDetailPage: React.FC = () => {
@@ -19,13 +20,69 @@ const ProductDetailPage: React.FC = () => {
       product?.seo?.description ||
       product?.shortDescription ||
       'This tool could not be found.',
-    canonicalPath: product ? `/tools/${product.slug}` : '/tools',
+    canonicalPath: product ? `/tools/${product.slug}` : `/tools/${slug ?? ''}`,
+    // Missing tools must not be indexed or canonicalised onto a live page.
+    robots: product ? 'index,follow' : 'noindex,follow',
   });
+
+  // WebApplication + BreadcrumbList. The "browser based, free, no signup"
+  // facts are properties of the Progeni tools themselves, so they are stated
+  // as structured data rather than only in prose.
+  //
+  // NOTE: this hook must stay above the `if (!product)` early return below —
+  // React requires the same hooks to run in the same order on every render.
+  useJsonLd(
+    product
+      ? {
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'WebApplication',
+              '@id': `https://progeni.live/tools/${product.slug}#app`,
+              name: product.name,
+              url: `https://progeni.live/tools/${product.slug}`,
+              description:
+                product.seo?.description || product.shortDescription,
+              applicationCategory: 'UtilitiesApplication',
+              operatingSystem: 'Any',
+              browserRequirements:
+                'Requires a modern browser with JavaScript enabled.',
+              offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'USD',
+                availability: 'https://schema.org/InStock',
+              },
+              isAccessibleForFree: true,
+              featureList: product.capabilities,
+              keywords: product.tags.join(', '),
+            },
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                {
+                  '@type': 'ListItem',
+                  position: 1,
+                  name: 'All Tools',
+                  item: 'https://progeni.live/tools',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 2,
+                  name: product.name,
+                  item: `https://progeni.live/tools/${product.slug}`,
+                },
+              ],
+            },
+          ],
+        }
+      : null
+  );
 
   if (!product) {
     return (
       <NotFoundPage
-        message={`We couldn't find a tool called “${slug}”.`}
+        message={`We couldn’t find a tool called “${slug}”.`}
       />
     );
   }
@@ -153,18 +210,17 @@ const ProductDetailPage: React.FC = () => {
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-slate-500">Last updated</dt>
                 <dd className="text-slate-700">
-                  {new Date(product.updatedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })}
+                  {formatCalendarDate(product.updatedAt)}
                 </dd>
               </div>
             </dl>
 
             <p className="mt-6 rounded-xl bg-slate-50 p-4 text-xs leading-relaxed text-slate-600">
               {product.name} works right in your browser — there is nothing to
-              install. It opens in a new tab and stays free to use.
+              install.{' '}
+              {destination.isExternal
+                ? 'It opens in a new tab and stays free to use.'
+                : 'It stays free to use.'}
             </p>
           </div>
         </aside>
