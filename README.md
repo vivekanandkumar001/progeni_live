@@ -21,7 +21,7 @@ their own subdomains; this site links to them.
 - Tailwind CSS (light-only design system — the site ships one light theme)
 - React Router v6 (client-side routing)
 - Zod (registry validation)
-- Vitest + React Testing Library (110 tests)
+- Vitest + React Testing Library (127 tests)
 - Lucide icons (explicitly imported to keep the bundle tree-shaken)
 
 ## Quick start
@@ -54,13 +54,14 @@ src/
   components/
     layout/            # Header (responsive nav), Footer, Layout
     search/SearchBox.tsx  # universal search with suggestions + keyboard nav
+    search/SearchOverlay.tsx  # header-triggered modal search panel
     ProductCard.tsx    # registry-driven product card
     CategoryCard.tsx   # registry-driven category card
     Badge.tsx          # status badges (active/beta/development/…)
   pages/               # Route components (/, /tools, /tools/:slug,
                        # /categories/:slug, /new, /about, /contact,
                        # /privacy, /terms, *)
-  test/                # Vitest suites (registry, search, selectors, UI, SEO)
+  test/                # Vitest suites (registry, search, selectors, UI, SEO, deploy)
 scripts/
   generate-sitemap.mjs # sitemap generated from the registry on every build
 public/                # favicon, robots.txt, og-image.jpg, generated sitemap.xml

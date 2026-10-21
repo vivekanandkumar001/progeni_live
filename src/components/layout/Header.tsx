@@ -1,7 +1,8 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useCallback, useRef } from 'react';
+import { NavLink } from 'react-router-dom';
 import { Menu, X, Search } from 'lucide-react';
 import { Logo } from '../Logo';
+import SearchOverlay from '../search/SearchOverlay';
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -16,6 +17,10 @@ const navLinks = [
 ];
 
 const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) => {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchTriggerRef = useRef<HTMLButtonElement>(null);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/85 backdrop-blur-md">
       <div className="page-container flex h-16 items-center justify-between gap-4">
@@ -42,13 +47,21 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
-            to="/tools"
-            className="hidden items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 transition-colors hover:border-indigo-400 hover:text-indigo-700 md:flex"
+          {/*
+            A magnifier that only navigates is a magnifier that lies. This one
+            opens the search panel, so it behaves the way it looks.
+          */}
+          <button
+            ref={searchTriggerRef}
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Open search"
+            aria-haspopup="dialog"
+            aria-expanded={searchOpen}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             <Search className="h-4 w-4" aria-hidden="true" />
-            Search
-          </Link>
+          </button>
 
           {/* Mobile menu toggle */}
           <button
@@ -92,16 +105,15 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
                 {link.label}
               </NavLink>
             ))}
-            <NavLink
-              to="/tools"
-              className="mt-1 flex items-center gap-2 rounded-lg bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-700 transition-colors hover:bg-indigo-100"
-            >
-              <Search className="h-4 w-4" aria-hidden="true" />
-              Search tools
-            </NavLink>
           </div>
         </nav>
       )}
+
+      <SearchOverlay
+        open={searchOpen}
+        onClose={closeSearch}
+        returnFocusRef={searchTriggerRef}
+      />
     </header>
   );
 };

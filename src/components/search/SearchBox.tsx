@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useId } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, X, ArrowRight } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { searchCatalog } from '../../lib/search';
 import { IconRenderer } from '../IconRenderer';
 
@@ -10,6 +10,8 @@ interface SearchBoxProps {
   autoFocus?: boolean;
   large?: boolean;
   initialQuery?: string;
+  /** Called after the search navigates somewhere — used to dismiss a host panel. */
+  onNavigate?: () => void;
 }
 
 /**
@@ -21,6 +23,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   autoFocus = false,
   large = false,
   initialQuery = '',
+  onNavigate,
 }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -68,8 +71,18 @@ const SearchBox: React.FC<SearchBoxProps> = ({
         ? `${submitPath}?q=${encodeURIComponent(trimmed)}`
         : submitPath;
       navigate(target);
+      onNavigate?.();
     },
-    [navigate, submitPath]
+    [navigate, submitPath, onNavigate]
+  );
+
+  const goToProduct = useCallback(
+    (slug: string) => {
+      setShowSuggestions(false);
+      navigate(`/tools/${slug}`);
+      onNavigate?.();
+    },
+    [navigate, onNavigate]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -89,13 +102,18 @@ const SearchBox: React.FC<SearchBoxProps> = ({
       setActiveIndex((prev) => (prev <= 0 ? suggestions.length - 1 : prev - 1));
     } else if (e.key === 'Enter' && activeIndex >= 0) {
       e.preventDefault();
-      navigate(`/tools/${suggestions[activeIndex].slug}`);
+      goToProduct(suggestions[activeIndex].slug);
     }
   };
 
   const inputSize = large
-    ? 'h-14 pl-12 pr-28 text-base sm:text-lg rounded-2xl'
-    : 'h-11 pl-10 pr-20 text-sm rounded-xl';
+    ? 'h-14 text-base sm:text-lg'
+    : 'h-11 text-sm';
+  const buttonSize = large
+    ? 'h-10 rounded-xl px-4 text-sm'
+    : 'h-8 rounded-lg px-3.5 text-xs';
+  const clearSize = large ? 'h-10 w-10' : 'h-8 w-8';
+  const clearIconSize = large ? 'h-4 w-4' : 'h-3.5 w-3.5';
   const iconPos = large ? 'left-4' : 'left-3.5';
   const iconClass = large ? 'h-5 w-5' : 'h-4 w-4';
 
@@ -108,9 +126,15 @@ const SearchBox: React.FC<SearchBoxProps> = ({
           submitSearch(query);
         }}
       >
-        <div className="relative">
+        {/*
+          One control, not a field with buttons floating on top of it. The
+          border, the focus ring and the background live on the wrapper, and
+          the input and the buttons sit side by side inside it — so the
+          buttons can never overlap the text, whatever the query length.
+        */}
+        <div className="relative flex items-center rounded-2xl border border-slate-300 bg-white shadow-sm ring-1 ring-transparent transition-colors focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/15">
           <Search
-            className={`absolute ${iconPos} top-1/2 -translate-y-1/2 text-slate-400 ${iconClass}`}
+            className={`pointer-events-none absolute ${iconPos} top-1/2 -translate-y-1/2 text-slate-400 ${iconClass}`}
             aria-hidden="true"
           />
           <input
@@ -130,7 +154,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
             autoComplete="off"
             spellCheck={false}
             placeholder="What would you like to do today?"
-            className={`w-full border border-slate-300 bg-white text-slate-900 shadow-sm placeholder-slate-400 transition-colors focus:border-indigo-500 focus:outline-none ${inputSize}`}
+            className={`min-w-0 flex-1 border-0 bg-transparent pl-12 pr-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-0 [&::-webkit-search-cancel-button]:hidden ${inputSize}`}
             onChange={(e) => {
               setQuery(e.target.value);
               setShowSuggestions(true);
@@ -139,7 +163,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={handleKeyDown}
           />
-          <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
+          <div className="flex shrink-0 items-center gap-1 pr-2">
             {query && (
               <button
                 type="button"
@@ -149,18 +173,18 @@ const SearchBox: React.FC<SearchBoxProps> = ({
                   setActiveIndex(-1);
                   inputRef.current?.focus();
                 }}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                className={`flex ${clearSize} items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
               >
-                <X className="h-3.5 w-3.5" aria-hidden="true" />
+                <X className={clearIconSize} aria-hidden="true" />
               </button>
             )}
             <button
               type="submit"
               aria-label="Search"
-              className="flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-500"
+              className={`inline-flex items-center justify-center rounded-lg bg-indigo-600 font-semibold text-white transition-colors hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${buttonSize}`}
             >
               <span className="hidden sm:inline">Search</span>
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              <Search className="h-4 w-4 sm:hidden" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -187,7 +211,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
                   index === activeIndex ? 'bg-indigo-50' : 'hover:bg-slate-50'
                 }`}
                 onMouseEnter={() => setActiveIndex(index)}
-                onClick={() => navigate(`/tools/${product.slug}`)}
+                onClick={() => goToProduct(product.slug)}
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
                   <IconRenderer name={product.icon} className="h-4 w-4" />
