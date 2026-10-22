@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { Link } from '../components/AppLink';
 import { SearchX, LayoutGrid } from 'lucide-react';
 import SearchBox from '../components/search/SearchBox';
 import { ProductCard } from '../components/ProductCard';

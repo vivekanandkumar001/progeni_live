@@ -19,7 +19,7 @@ their own subdomains; this site links to them.
 
 - React 18 + TypeScript + Vite
 - Tailwind CSS (light-only design system — the site ships one light theme)
-- React Router v6 (client-side routing)
+- React Router v6 data router (client-side routing, scroll restoration, View Transitions)
 - Zod (registry validation)
 - Vitest + React Testing Library (127 tests)
 - Lucide icons (explicitly imported to keep the bundle tree-shaken)
@@ -52,7 +52,8 @@ src/
     seo.ts             # per-route meta title/description/canonical/OG + JSON-LD
     dates.ts           # timezone-stable calendar date formatting
   components/
-    layout/            # Header (responsive nav), Footer, Layout
+    AppLink.tsx        # Link/NavLink wrappers that turn on view transitions
+    layout/            # Header (responsive nav), Footer, Layout, ScrollManager
     search/SearchBox.tsx  # universal search with suggestions + keyboard nav
     search/SearchOverlay.tsx  # header-triggered modal search panel
     ProductCard.tsx    # registry-driven product card
@@ -61,6 +62,8 @@ src/
   pages/               # Route components (/, /tools, /tools/:slug,
                        # /categories/:slug, /new, /about, /contact,
                        # /privacy, /terms, *)
+  routes.tsx           # Route table for the data router — URLs live here
+  main.tsx             # createBrowserRouter + RouterProvider entry point
   test/                # Vitest suites (registry, search, selectors, UI, SEO, deploy)
 scripts/
   generate-sitemap.mjs # sitemap generated from the registry on every build

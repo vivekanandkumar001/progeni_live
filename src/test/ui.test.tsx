@@ -1,18 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import App from '../App';
-
-function renderAt(initialRoute: string) {
-  return render(
-    <MemoryRouter initialEntries={[initialRoute]}>
-      <Routes>
-        <Route path="*" element={<App />} />
-      </Routes>
-    </MemoryRouter>
-  );
-}
+import { renderAt } from './utils';
 
 describe('HomePage', () => {
   it('renders the hero headline and search input', () => {

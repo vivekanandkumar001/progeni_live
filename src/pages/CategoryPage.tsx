@@ -1,5 +1,6 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '../components/AppLink';
 import { ArrowLeft } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 import { Breadcrumb } from '../components/Breadcrumb';

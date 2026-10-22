@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/AppLink';
 import {
   ArrowRight,
   Compass,
@@ -105,7 +105,7 @@ const HomePage: React.FC = () => {
 
       {/* Featured services */}
       {featured.length > 0 && (
-        <section aria-labelledby="featured-heading" className="border-b border-slate-200 py-16 sm:py-20">
+        <section id="featured" aria-labelledby="featured-heading" className="scroll-mt-20 border-b border-slate-200 py-16 sm:py-20">
           <div className="page-container">
             <h2 id="featured-heading" className="section-title">
               Featured Tools
@@ -124,7 +124,7 @@ const HomePage: React.FC = () => {
 
       {/* Categories */}
       {categories.length > 0 && (
-        <section aria-labelledby="categories-heading" className="border-b border-slate-200 bg-white py-16 sm:py-20">
+        <section id="categories" aria-labelledby="categories-heading" className="scroll-mt-20 border-b border-slate-200 bg-white py-16 sm:py-20">
           <div className="page-container">
             <h2 id="categories-heading" className="section-title">
               Browse by Category
@@ -143,7 +143,7 @@ const HomePage: React.FC = () => {
 
       {/* Recently launched */}
       {recent.length > 0 && (
-        <section aria-labelledby="recent-heading" className="border-b border-slate-200 py-16 sm:py-20">
+        <section id="new" aria-labelledby="recent-heading" className="scroll-mt-20 border-b border-slate-200 py-16 sm:py-20">
           <div className="page-container">
             <div className="flex items-end justify-between gap-4">
               <div>
@@ -171,7 +171,7 @@ const HomePage: React.FC = () => {
 
       {/* More services preview */}
       {preview.length > 0 && (
-        <section aria-labelledby="services-heading" className="border-b border-slate-200 bg-white py-16 sm:py-20">
+        <section id="more-tools" aria-labelledby="services-heading" className="scroll-mt-20 border-b border-slate-200 bg-white py-16 sm:py-20">
           <div className="page-container">
             <div className="flex items-end justify-between gap-4">
               <div>
@@ -206,7 +206,7 @@ const HomePage: React.FC = () => {
       )}
 
       {/* About */}
-      <section aria-labelledby="about-heading" className="py-16 sm:py-20">
+      <section id="about" aria-labelledby="about-heading" className="scroll-mt-20 py-16 sm:py-20">
         <div className="page-container">
           <div className="mx-auto max-w-3xl text-center">
             <h2 id="about-heading" className="section-title">

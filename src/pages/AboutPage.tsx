@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/AppLink';
 import { Layers, Boxes, Rocket, ArrowRight } from 'lucide-react';
 import { getPublicProducts } from '../registry/selectors';
 import { useSeo } from '../lib/seo';

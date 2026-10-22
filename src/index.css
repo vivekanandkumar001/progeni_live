@@ -27,6 +27,47 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+
+    /* View transitions are a full-page animation — skip them entirely. */
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
+}
+
+/*
+ * Route transitions.
+ *
+ * The View Transitions API lets the browser animate the swap between two
+ * pages. React Router wraps every internal navigation in one, so moving
+ * around the site reads as one continuous surface rather than a series of
+ * documents loading. The old view steps up and out quickly; the new one
+ * settles in — short enough to feel instant, long enough to explain what
+ * just happened.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: progeni-view-out 120ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: progeni-view-in 200ms cubic-bezier(0, 0, 0.2, 1) both;
+  }
+}
+
+@keyframes progeni-view-out {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes progeni-view-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
 }
 

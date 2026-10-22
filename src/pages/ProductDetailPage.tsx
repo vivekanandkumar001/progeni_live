@@ -1,5 +1,6 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '../components/AppLink';
 import { ExternalLink, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { getProductBySlug, getPublicCategories } from '../registry/selectors';
 import { resolveDestination } from '../lib/destinations';

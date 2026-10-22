@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { Link } from '../components/AppLink';
 import { Compass, ArrowRight } from 'lucide-react';
 import { useSeo } from '../lib/seo';
 

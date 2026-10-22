@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/AppLink';
 import { ShieldCheck } from 'lucide-react';
 import { useSeo } from '../lib/seo';
 

@@ -2,16 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
-
-const ScrollToTop: React.FC = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
-  }, [pathname]);
-
-  return null;
-};
+import ScrollManager from './ScrollManager';
 
 const Layout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,9 +15,15 @@ const Layout: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <ScrollToTop />
+      <ScrollManager />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-xl focus:bg-white focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-indigo-700 focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <Header mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
-      <main className="flex-1">
+      <main id="main-content" className="scroll-mt-20 flex-1">
         <Outlet />
       </main>
       <Footer />

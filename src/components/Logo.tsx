@@ -1,5 +1,5 @@
 import React, { useId } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from './AppLink';
 
 /**
  * The Progeni logo mark: a rounded indigo→violet badge with a white "P"

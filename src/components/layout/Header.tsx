@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from '../AppLink';
 import { Menu, X, Search } from 'lucide-react';
 import { Logo } from '../Logo';
 import SearchOverlay from '../search/SearchOverlay';

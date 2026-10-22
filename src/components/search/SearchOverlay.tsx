@@ -44,6 +44,13 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({
     const { overflow } = document.body.style;
     document.body.style.overflow = 'hidden';
 
+    // Take the page behind the panel out of the tab order and the
+    // accessibility tree, so it does not offer a second, unopenable copy of
+    // the search field while the panel is up. `aria-modal` alone is only a
+    // hint; `inert` is the enforcement.
+    const appRoot = document.getElementById('root');
+    appRoot?.setAttribute('inert', '');
+
     // The input mounts with the panel, so it can take focus directly.
     const input = panelRef.current?.querySelector<HTMLInputElement>('input');
     input?.focus();
@@ -78,6 +85,9 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = overflow;
+      // Give the page back before handing focus to it — an inert element
+      // cannot take focus.
+      appRoot?.removeAttribute('inert');
       const target = returnFocusRef?.current ?? previouslyFocused;
       target?.focus?.();
     };

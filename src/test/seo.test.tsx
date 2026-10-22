@@ -1,18 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import App from '../App';
+import { screen } from '@testing-library/react';
 import { formatCalendarDate } from '../lib/dates';
-
-function renderAt(initialRoute: string) {
-  return render(
-    <MemoryRouter initialEntries={[initialRoute]}>
-      <Routes>
-        <Route path="*" element={<App />} />
-      </Routes>
-    </MemoryRouter>
-  );
-}
+import { renderAt } from './utils';
 
 /** Reads a meta tag by name, tolerating tags that the page did not create. */
 function metaContent(name: string): string | null {
