@@ -12,6 +12,13 @@ export interface SeoProps {
 const BASE_URL = 'https://progeni.live';
 const JSONLD_ID = 'progeni-jsonld';
 
+let ssrSeo: SeoProps & { jsonLd?: string | null } = null as any;
+export function takeSsrSeo() {
+  const v = ssrSeo;
+  ssrSeo = null as any;
+  return v;
+}
+
 /**
  * Injects (or replaces) a single JSON-LD block in <head>.
  *
@@ -43,6 +50,9 @@ export function updatePageSeo({
   ogType = 'website',
   robots = 'index,follow',
 }: SeoProps) {
+  if (typeof document === 'undefined') {
+    ssrSeo = { title, description, canonicalPath, ogType, robots };
+    return; }
   // Update Title
   const formattedTitle = title.includes('Progeni') ? title : `${title} — Progeni`;
   document.title = formattedTitle;
@@ -128,6 +138,10 @@ export function useSeo(props: SeoProps) {
  */
 export function useJsonLd(data: Record<string, unknown> | null) {
   const serialized = data === null ? null : JSON.stringify(data);
+  if (typeof document === 'undefined') {
+    if (!ssrSeo) ssrSeo = {} as any;
+    (ssrSeo as any).jsonLd = serialized;
+  }
   useLayoutEffect(() => {
     setJsonLd(serialized);
   }, [serialized]);

@@ -3,54 +3,44 @@
     "id": "prod-bench",
     "slug": "bench",
     "name": "Progeni Bench",
-    "shortDescription": "30 private browser file, craft, media, and spreadsheet utilities running 100% locally with zero server uploads.",
-    "description": "Progeni Bench is a private, client-side toolkit designed for creators, crafters, and everyday desk workers. It features 30 focused utilities — including Avery label generators, sticker sheet makers, t-shirt mirror tools, cross-stitch chart creators, SRT subtitle speed auditors, contact CSV deduplication, and photo croppers. Every tool processes your files directly in browser memory using Web Workers, Canvas, and HTML5 APIs without sending a single byte to an external server.",
-    "categoryIds": ["cat-privacy-file", "cat-media", "cat-data", "cat-productivity"],
+    "shortDescription": "Progeni Bench brings 120 private browser tools for images, audio, files, data, crafts and productivity — running locally with no server uploads.",
+    "description": "Progeni Bench is a private, client-side toolkit of 120 utilities: 30 legacy file, craft and data tools plus 42 image tools and 48 audio tools. It includes Avery label makers, sticker sheets, image resize/convert/compress, audio conversion, trimming, loudness analysis and recording, subtitle timing repair, CSV and vCard cleaning, QR and barcode generators, SVG optimisation and more. Every tool processes files in browser memory using Web Workers, Canvas, Web Audio and FFmpeg.wasm, so files are never uploaded to a server.",
+    "categoryIds": [
+      "cat-privacy-file",
+      "cat-media",
+      "cat-data",
+      "cat-productivity"
+    ],
     "tags": [
       "bench",
+      "image tools",
+      "audio tools",
       "labels",
       "avery 5160",
       "sticker sheet",
-      "t-shirt mirror",
-      "subtitles",
+      "subtitle timing",
       "csv",
       "vcard",
       "cropper",
+      "audio converter",
+      "loudness",
       "zero-upload",
-      "client-side",
-      "crafts"
+      "client-side"
     ],
     "capabilities": [
-      "Sticker Sheet Maker — printable grids, kiss-cut lines, PNG / PDF / SVG export",
-      "Avery 5160 / Label Maker — 5160, 5163, 5167, L7160 and custom label sheets",
-      "T-Shirt Print Mirror — flip art for heat-transfer paper",
-      "Iron-on Transfer Sheet Maker — US Letter and A4 layouts at 300 DPI",
-      "Print Layout Optimizer — pack up to 40 photos onto a sheet",
-      "Photo Print Border Calculator — exact mat borders for common frame sizes",
-      "Cross-Stitch Pattern Maker — photo to chart with DMC floss colours",
-      "Diamond Painting Pattern Maker — symbol charts with drill counts and canvas plan",
-      "Embroidery Pattern Simplifier — reduce artwork to a simple thread palette",
-      "Video Safe-Zone Checker — TikTok, Reels and Shorts overlay previews",
-      "Video Thumbnail Contact Sheet — 4–48 timestamped frames in one PNG",
-      "Chapter Timestamp Formatter — YouTube and podcast chapter timestamps",
-      "Podcast Silence Map — detect dead air and export gap lists",
-      "Subtitle Reading-Speed Checker — CPS, duration and line-length audit for SRT",
-      "Subtitle Line-Break Fixer — rewrap long subtitle lines to your limits",
-      "Contact CSV Deduplicator — merge duplicate CRM contacts by email or phone",
-      "CSV Column Splitter — split names and addresses without Excel",
-      "CSV Date Normalizer — standardize dates to US, ISO or European format",
-      "vCard (VCF) Split & Merge — combine and inspect contact files",
-      "Chrome Bookmark Cleaner — strip duplicate bookmarks and dead folders",
-      "Bookmark to Reading List — turn bookmark HTML into an offline reading list",
-      "SVG Cleanup & Minifier — strip metadata and shrink SVG files",
-      "iCal Calendar Deduplicator — find repeated VEVENT entries in .ics exports",
-      "Timetable to Calendar — turn a class timetable CSV into recurring events",
-      "Wallpaper Photo Cropper — crop to phone, tablet and desktop presets",
-      "Panorama Carousel Splitter — slice wide photos into Instagram tiles",
-      "Photo Duplicate Finder — find exact and near-duplicate photos",
-      "Photo Best-Shot Finder — rank burst photos by sharpness and exposure",
-      "Photo Timeline Builder — build a chronological album from EXIF dates",
-      "Family Photo Date Organizer — sort photos into a date tree and export a rename plan"
+      "30 legacy utilities for labels, stickers, cross-stitch and diamond painting, subtitles, CSV and vCard cleanup, bookmarks, SVG and photos",
+      "42 image utilities for resizing, cropping, compressing, converting, watermarking, stripping metadata and optimising SVG",
+      "48 audio utilities for converting, trimming, joining, normalising, loudness (LUFS) analysis, recording and applying effects",
+      "Create printable Avery label sheets and custom label layouts from CSV or pasted data",
+      "Build sticker sheets with print-ready PNG, PDF and SVG exports",
+      "Create cross-stitch, embroidery and diamond-painting patterns from photos",
+      "Check subtitle reading speed and repair subtitle line breaks",
+      "Split CSV columns and standardise dates in spreadsheet exports",
+      "Deduplicate contact lists and split or merge vCard files",
+      "Generate and clean QR codes, barcodes and SVG assets",
+      "Find duplicate photos and rank burst shots using local image analysis",
+      "Record, convert, trim, join and analyse audio in the browser",
+      "All processing happens locally in the browser; there is no upload endpoint and no account"
     ],
     "status": "active",
     "visibility": "public",
@@ -65,20 +55,23 @@
     "featured": true,
     "sortOrder": 1,
     "seo": {
-      "title": "Progeni Bench — Free Private In-Browser File & Craft Tools",
-      "description": "Explore 30 private file tools in Progeni Bench: Avery label makers, sticker sheets, subtitle repair, and CSV cleaning with zero uploads.",
+      "title": "Progeni Bench — 120 Private Browser Tools for Images, Audio, Files and Data",
+      "description": "Progeni Bench includes 120 free, private in-browser utilities for images, audio, labels, CSV, subtitles and more. Runs locally with no server uploads.",
       "indexable": true
     },
     "createdAt": "2024-09-15T00:00:00Z",
-    "updatedAt": "2026-10-15T00:00:00Z"
+    "updatedAt": "2026-10-24T00:00:00Z"
   },
   {
     "id": "prod-wakit",
     "slug": "wakit",
-    "name": "WaKit (WhatsSwift)",
-    "shortDescription": "Free client-side WhatsApp utilities: 30s status video splitter, direct unsaved chat, QR code generator, and 16MB audio compressor.",
-    "description": "WaKit (also known as WhatsSwift) provides high-performance WhatsApp productivity tools powered by WebAssembly. Users can split long videos into precise 30-second status clips using lossless FFmpeg stream copy, open direct chats with international phone numbers without saving contacts, generate scan-to-chat QR codes, and transcode audio recordings under WhatsApp's 16MB attachment ceiling. All computations run in the client sandbox with zero telemetry.",
-    "categoryIds": ["cat-communication", "cat-media"],
+    "name": "WaKit",
+    "shortDescription": "Free client-side WhatsApp utilities: split 30-second status videos, open a chat without saving a number, generate QR and link codes, and compress audio to fit the 16 MB limit.",
+    "description": "WaKit is a set of WhatsApp productivity tools that run entirely in the browser with WebAssembly. Split a long video into exact 30-second status clips with lossless FFmpeg stream copy, open a wa.me chat without adding a contact, generate WhatsApp chat links and QR codes, and transcode audio so it fits the 16 MB document limit. There is no upload endpoint: media is read from the file picker into browser memory and released when you clear the tool.",
+    "categoryIds": [
+      "cat-communication",
+      "cat-media"
+    ],
     "tags": [
       "wakit",
       "whatsswift",
@@ -93,12 +86,10 @@
       "messaging"
     ],
     "capabilities": [
-      "30-Second Status Video Splitter (Lossless WebAssembly)",
-      "Direct WhatsApp Chat Without Saving Numbers",
-      "Custom Scan-to-Chat & Wi-Fi QR Code Generator",
-      "Audio Compressor for 16MB WhatsApp Limit",
-      "Zero Server Uploads & Zero Storage",
-      "No Signup or Account Required"
+      "Split videos into exact 30-second WhatsApp status clips with lossless stream copy",
+      "Open a WhatsApp chat from a phone number without saving it to contacts",
+      "Generate wa.me links and QR codes, including Wi-Fi and payment payloads",
+      "Compress audio to the 16 MB WhatsApp document limit with local FFmpeg transcoding"
     ],
     "status": "active",
     "visibility": "public",
@@ -112,11 +103,11 @@
     "featured": true,
     "sortOrder": 2,
     "seo": {
-      "title": "WaKit (WhatsSwift) — Private WhatsApp Utilities",
-      "description": "Split 30s status videos, send direct WhatsApp messages without saving numbers, and compress audio files to 16MB locally via WebAssembly.",
+      "title": "WaKit — Private WhatsApp Status Splitter, Direct Chat, QR and Audio Tools",
+      "description": "Split WhatsApp status videos, message without saving numbers, generate QR codes and compress audio to 16 MB — in your browser, no uploads.",
       "indexable": true
     },
     "createdAt": "2024-10-01T00:00:00Z",
-    "updatedAt": "2026-10-18T00:00:00Z"
+    "updatedAt": "2026-10-24T00:00:00Z"
   }
 ]
