@@ -12,7 +12,11 @@ describe('HomePage', () => {
 
   it('renders the Progeni logo in the header and footer', () => {
     renderAt('/');
-    expect(screen.getAllByRole('link', { name: /progeni home/i }).length).toBeGreaterThanOrEqual(2);
+    const logoLinks = screen.getAllByRole('link', { name: /progeni home/i });
+    expect(logoLinks.length).toBeGreaterThanOrEqual(2);
+    for (const link of logoLinks) {
+      expect(link.querySelector('img')).toHaveAttribute('src', '/favicon.svg');
+    }
   });
 
   it('renders featured products from the registry (not hardcoded)', () => {
