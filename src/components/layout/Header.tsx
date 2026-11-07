@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React from 'react';
 import { NavLink } from '../AppLink';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Logo } from '../Logo';
-import SearchOverlay from '../search/SearchOverlay';
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -17,21 +16,6 @@ const navLinks = [
 ];
 
 const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) => {
-  const [searchOpen, setSearchOpen] = useState(false);
-  const searchTriggerRef = useRef<HTMLButtonElement>(null);
-  const closeSearch = useCallback(() => setSearchOpen(false), []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setSearchOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/85 backdrop-blur-md">
       <div className="page-container flex h-16 items-center justify-between gap-4">
@@ -57,35 +41,11 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          {/*
-            Flipkart-style header search bar trigger.
-            Displays as a prominent, styled search pill on desktop and a compact icon on mobile.
-          */}
-          <button
-            ref={searchTriggerRef}
-            type="button"
-            onClick={() => setSearchOpen(true)}
-            aria-label="Open search"
-            aria-haspopup="dialog"
-            aria-expanded={searchOpen}
-            className="flex items-center justify-center sm:justify-between gap-2.5 h-10 w-9 sm:w-56 md:w-64 lg:w-72 rounded-xl border border-slate-200/90 bg-[#f0f5ff] px-0 sm:px-3.5 text-xs text-slate-500 transition-all hover:border-[#2874f0]/60 hover:bg-[#e8f0fe] hover:text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2874f0]"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <Search className="h-4 w-4 shrink-0 text-[#2874f0]" aria-hidden="true" />
-              <span className="hidden sm:inline font-normal truncate">
-                Search tools, features...
-              </span>
-            </div>
-            <span className="hidden sm:inline-block shrink-0 rounded-md border border-slate-200/90 bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">
-              ⌘K
-            </span>
-          </button>
-
-          {/* Mobile menu toggle */}
+        {/* Mobile menu toggle */}
+        <div className="flex items-center gap-2 md:hidden">
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 md:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
@@ -127,14 +87,9 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
           </div>
         </nav>
       )}
-
-      <SearchOverlay
-        open={searchOpen}
-        onClose={closeSearch}
-        returnFocusRef={searchTriggerRef}
-      />
     </header>
   );
 };
 
 export default Header;
+

@@ -1,78 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { renderAt } from './utils';
-
-describe('Header search overlay', () => {
-  it('opens a modal search panel from the header magnifier', async () => {
-    const user = userEvent.setup();
-    renderAt('/');
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-
-    await user.click(screen.getByRole('button', { name: /open search/i }));
-
-    const dialog = screen.getByRole('dialog', { name: /search tools/i });
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
-    expect(within(dialog).getByRole('combobox', { name: /search tools/i })).toBeInTheDocument();
-  });
-
-  it('moves focus into the search field when it opens', async () => {
-    const user = userEvent.setup();
-    renderAt('/');
-    await user.click(screen.getByRole('button', { name: /open search/i }));
-    const input = within(screen.getByRole('dialog')).getByRole('combobox');
-    expect(input).toHaveFocus();
-  });
-
-  it('closes on Escape and gives focus back to the trigger', async () => {
-    const user = userEvent.setup();
-    renderAt('/');
-    const trigger = screen.getByRole('button', { name: /open search/i });
-    await user.click(trigger);
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-
-    await user.keyboard('{Escape}');
-
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(trigger).toHaveFocus();
-  });
-
-  it('closes when the backdrop is clicked', async () => {
-    const user = userEvent.setup();
-    renderAt('/');
-    await user.click(screen.getByRole('button', { name: /open search/i }));
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-
-    await user.click(document.querySelector('[aria-hidden="true"].backdrop-blur-sm') as HTMLElement);
-
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-  });
-
-  it('locks page scrolling while open and restores it on close', async () => {
-    const user = userEvent.setup();
-    renderAt('/');
-    await user.click(screen.getByRole('button', { name: /open search/i }));
-    expect(document.body.style.overflow).toBe('hidden');
-
-    await user.keyboard('{Escape}');
-    expect(document.body.style.overflow).not.toBe('hidden');
-  });
-
-  it('searches from the overlay without losing the panel', async () => {
-    const user = userEvent.setup();
-    renderAt('/');
-    await user.click(screen.getByRole('button', { name: /open search/i }));
-    const dialog = screen.getByRole('dialog');
-    const input = within(dialog).getByRole('combobox', { name: /search tools/i });
-
-    await user.type(input, 'bench');
-    const suggestion = await within(dialog).findByRole('option');
-    await user.click(within(suggestion).getByRole('button', { name: /progeni bench/i }));
-
-    expect(screen.getByRole('heading', { name: 'Progeni Bench' })).toBeInTheDocument();
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-  });
-});
 
 describe('Search control layout', () => {
   it('keeps the input and the buttons side by side instead of overlapping', () => {
@@ -109,10 +37,10 @@ describe('Search control layout', () => {
     expect(screen.getAllByRole('combobox')).toHaveLength(1);
   });
 
-  it('shows exactly one search trigger in the header', () => {
+  it('does not place a search trigger in the header to keep navigation clean', () => {
     renderAt('/');
     const header = screen.getByRole('banner');
-    expect(within(header).queryAllByRole('button', { name: /open search/i })).toHaveLength(1);
+    expect(within(header).queryAllByRole('button', { name: /open search/i })).toHaveLength(0);
   });
 
   it('never gives two buttons the same accessible name', () => {
@@ -123,13 +51,6 @@ describe('Search control layout', () => {
     const meaningful = names.filter(Boolean);
     expect(meaningful.length).toBeGreaterThan(0);
     expect(new Set(meaningful).size).toBe(meaningful.length);
-  });
-
-  it('names the trigger and the search field differently', () => {
-    renderAt('/');
-    const trigger = screen.getByRole('button', { name: /open search/i });
-    const field = screen.getByRole('combobox', { name: /search tools/i });
-    expect(trigger).not.toHaveAccessibleName(field.getAttribute('aria-label') ?? '');
   });
 });
 
@@ -147,3 +68,4 @@ describe('Duplicate identifiers', () => {
     expect(logos.length).toBeGreaterThanOrEqual(2);
   });
 });
+
