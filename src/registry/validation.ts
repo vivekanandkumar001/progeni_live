@@ -10,6 +10,15 @@ export interface ValidationResult {
   categoryCount: number;
 }
 
+function destinationKey(destination: Product['destination']): string {
+  const url =
+    destination.type === 'path'
+      ? new URL(destination.url, 'https://progeni.live')
+      : new URL(destination.url);
+  const pathname = url.pathname.replace(/\/+$/, '') || '/';
+  return `${url.origin}${pathname}`.toLowerCase();
+}
+
 export function validateRegistry(
   products: unknown[] = productsData,
   categories: unknown[] = categoriesData
@@ -70,6 +79,7 @@ export function validateRegistry(
   const parsedProducts: Product[] = [];
   const productIds = new Set<string>();
   const productSlugs = new Set<string>();
+  const productDestinations = new Map<string, string>();
 
   for (let i = 0; i < products.length; i++) {
     const rawProd = products[i];
@@ -102,22 +112,33 @@ export function validateRegistry(
       }
     }
 
-    // Destination scheme check
-    try {
-      const urlObj = new URL(prod.destination.url);
-      if (urlObj.protocol !== 'https:' && urlObj.protocol !== 'http:') {
-        errors.push(`Product "${prod.slug}" destination has unsupported protocol "${urlObj.protocol}".`);
+    const urls = [
+      prod.destination.url,
+      ...(prod.destination.canonicalUrl ? [prod.destination.canonicalUrl] : []),
+    ];
+    for (const value of urls) {
+      const destination = {
+        ...prod.destination,
+        url: value,
+        type: value === prod.destination.url ? prod.destination.type : 'external',
+      } as Product['destination'];
+      const key = destinationKey(destination);
+      const existingSlug = productDestinations.get(key);
+      if (existingSlug && existingSlug !== prod.slug) {
+        errors.push(
+          `Product "${prod.slug}" conflicts with "${existingSlug}" at destination "${value}".`
+        );
+      } else {
+        productDestinations.set(key, prod.slug);
       }
-      if (process.env.NODE_ENV === 'production' && urlObj.protocol !== 'https:') {
-        warnings.push(`Product "${prod.slug}" uses non-HTTPS URL in production: ${prod.destination.url}`);
-      }
-    } catch {
-      errors.push(`Product "${prod.slug}" has invalid destination URL: "${prod.destination.url}"`);
     }
 
     // Visibility warning
     if (prod.visibility === 'private' && prod.status === 'active') {
       warnings.push(`Product "${prod.slug}" is active but set to private.`);
+    }
+    if (prod.visibility === 'public' && ['draft', 'archived'].includes(prod.status)) {
+      warnings.push(`Product "${prod.slug}" is ${prod.status} and will not appear in public discovery.`);
     }
 
     parsedProducts.push(prod);

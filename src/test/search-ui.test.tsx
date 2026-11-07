@@ -141,13 +141,9 @@ describe('Duplicate identifiers', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('gives every logo mark its own gradient id', () => {
+  it('renders the shared logo asset for every logo mark', () => {
     renderAt('/');
-    const gradients = Array.from(document.querySelectorAll('linearGradient')).map((g) => g.id);
-    expect(gradients.length).toBeGreaterThanOrEqual(2);
-    expect(new Set(gradients).size).toBe(gradients.length);
-    for (const id of gradients) {
-      expect(id).toMatch(/^progeni-logo-gradient-[a-zA-Z0-9_-]+$/);
-    }
+    const logos = Array.from(document.querySelectorAll('img[src="/favicon.svg"]'));
+    expect(logos.length).toBeGreaterThanOrEqual(2);
   });
 });

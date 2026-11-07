@@ -12,6 +12,10 @@ interface StatusBadgeProps {
  */
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'sm' }) => {
   const styles: Record<ProductStatus, { classes: string; label: string }> = {
+    draft: {
+      classes: 'bg-slate-100 border-slate-200 text-slate-600',
+      label: 'Draft',
+    },
     active: {
       classes: 'bg-emerald-50 border-emerald-200 text-emerald-700',
       label: 'Available',
@@ -31,6 +35,10 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'sm' })
     deprecated: {
       classes: 'bg-slate-100 border-slate-200 text-slate-600',
       label: 'Retired',
+    },
+    archived: {
+      classes: 'bg-slate-100 border-slate-200 text-slate-600',
+      label: 'Archived',
     },
   };
 

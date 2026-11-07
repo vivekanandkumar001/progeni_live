@@ -26,15 +26,14 @@ describe('HomePage', () => {
     expect(screen.getAllByRole('heading', { name: /wakit/i }).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('links products to their live apps with safe external attributes', () => {
+  it('links products to their live apps without forcing a new tab', () => {
     renderAt('/');
     const openLinks = screen.getAllByRole('link', { name: /^open progeni bench$|^open wakit/i });
     expect(openLinks.length).toBeGreaterThanOrEqual(2);
     expect(openLinks.some((a) => a.getAttribute('href')?.includes('bench.progeni.live'))).toBe(true);
     expect(openLinks.some((a) => a.getAttribute('href')?.includes('wakit.progeni.live'))).toBe(true);
     for (const link of openLinks) {
-      expect(link).toHaveAttribute('target', '_blank');
-      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+      expect(link).not.toHaveAttribute('target');
     }
   });
 

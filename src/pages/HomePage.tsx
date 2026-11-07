@@ -227,12 +227,12 @@ const HomePage: React.FC = () => {
               {
                 icon: Boxes,
                 title: 'Everything together',
-                text: 'All our tools live under one roof, with a familiar experience.',
+                text: 'Discover independent products and tools from one place.',
               },
               {
                 icon: ShieldCheck,
-                title: 'Private by default',
-                text: 'Our tools are built to work on your device, not on a remote server.',
+                title: 'Clear about privacy',
+                text: 'Many tools process files locally. Product pages describe when a service sends data elsewhere.',
               },
               {
                 icon: Compass,

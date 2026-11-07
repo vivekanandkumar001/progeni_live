@@ -7,7 +7,7 @@ const PrivacyPage: React.FC = () => {
   useSeo({
     title: 'Privacy Policy — Progeni',
     description:
-      'Your files stay on your device. Here is how Progeni handles your information in plain language.',
+      'Learn how Progeni handles browsing data and how independent products may process files or share data with providers.',
     canonicalPath: '/privacy',
   });
 
@@ -25,10 +25,11 @@ const PrivacyPage: React.FC = () => {
               The short version
             </h2>
             <p className="mt-3">
-              Your files stay on your device. Our tools do their work inside
-              your browser, so the documents, photos and files you use are
-              never uploaded to us. You don&rsquo;t need an account to use
-              Progeni, and we don&rsquo;t ask for personal information.
+              Progeni is a discovery site for independently operated products.
+              Many tools process files in your browser, but data handling varies
+              by product. Review the product&rsquo;s own privacy information
+              before using it with sensitive content. You don&rsquo;t need a
+              Progeni account to browse this site.
             </p>
           </section>
 
@@ -64,10 +65,12 @@ const PrivacyPage: React.FC = () => {
               Our tools
             </h2>
             <p className="mt-3">
-              Tools like Progeni Bench and WaKit are designed to work entirely
-              on your device. When you open a file, it is processed in your
-              browser&rsquo;s memory and is not sent anywhere. Each tool has
-              its own privacy page, which applies while you use that tool.
+              Progeni Bench and WaKit are independent products, and their own
+              privacy notices apply when you use them. Most Bench tools process
+              files locally. Bench&rsquo;s PDF Translator sends extracted PDF
+              text to Bench&rsquo;s translation service, which forwards it to
+              DeepL; the PDF pages remain in your browser. Do not use that
+              feature for sensitive text unless you accept this data flow.
             </p>
           </section>
 
@@ -109,8 +112,8 @@ const PrivacyPage: React.FC = () => {
         <div className="mt-10 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-sm leading-relaxed text-emerald-900">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
           <p>
-            Privacy is built in, not bolted on: our tools are designed to keep
-            your files on your own device.
+            Check each product&rsquo;s privacy notice and tool-specific data
+            flow before submitting personal or confidential information.
           </p>
         </div>
       </div>

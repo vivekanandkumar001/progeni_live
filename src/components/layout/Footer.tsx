@@ -30,8 +30,6 @@ const Footer: React.FC = () => {
                 <li key={product.id}>
                   <a
                     href={product.destination.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="text-sm text-slate-600 transition-colors hover:text-indigo-700"
                   >
                     {product.name}

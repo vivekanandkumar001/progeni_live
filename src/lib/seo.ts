@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 
 export interface SeoProps {
   title: string;
@@ -13,6 +13,9 @@ const BASE_URL = 'https://progeni.live';
 const JSONLD_ID = 'progeni-jsonld';
 
 let ssrSeo: SeoProps & { jsonLd?: string | null } = null as any;
+const useIsomorphicLayoutEffect =
+  typeof document === 'undefined' ? useEffect : useLayoutEffect;
+
 export function takeSsrSeo() {
   const v = ssrSeo;
   ssrSeo = null as any;
@@ -120,7 +123,10 @@ export function updatePageSeo({
  * otherwise read (and index) the wrong canonical URL.
  */
 export function useSeo(props: SeoProps) {
-  useLayoutEffect(() => {
+  if (typeof document === 'undefined') {
+    ssrSeo = props;
+  }
+  useIsomorphicLayoutEffect(() => {
     updatePageSeo(props);
     // Drop any structured data left behind by the previous route. Pages that
     // do provide JSON-LD call useJsonLd() immediately after useSeo(), so the
@@ -142,7 +148,7 @@ export function useJsonLd(data: Record<string, unknown> | null) {
     if (!ssrSeo) ssrSeo = {} as any;
     (ssrSeo as any).jsonLd = serialized;
   }
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setJsonLd(serialized);
   }, [serialized]);
 }

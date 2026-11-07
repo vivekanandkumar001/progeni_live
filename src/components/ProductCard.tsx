@@ -79,8 +79,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {destination.isExternal ? (
           <a
             href={destination.url}
-            target={destination.target}
-            rel={destination.rel}
             aria-label={`Open ${product.name}`}
             className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500"
           >

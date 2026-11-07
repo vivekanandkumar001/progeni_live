@@ -34,6 +34,11 @@ describe('searchCatalog', () => {
     expect(results.some((r) => r.product.slug === 'wakit')).toBe(true);
   });
 
+  it('finds products by registry aliases and keywords', () => {
+    expect(searchCatalog('whatsapp toolkit').some((r) => r.product.slug === 'wakit')).toBe(true);
+    expect(searchCatalog('pdf translator').some((r) => r.product.slug === 'bench')).toBe(true);
+  });
+
   it('finds products by capability text', () => {
     const results = searchCatalog('subtitle');
     expect(results.some((r) => r.product.slug === 'bench')).toBe(true);

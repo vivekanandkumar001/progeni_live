@@ -10,7 +10,13 @@ const categories = categoriesData as Category[];
  */
 export function getPublicProducts(): Product[] {
   return products
-    .filter((p) => p.visibility === 'public' && p.status !== 'deprecated')
+    .filter(
+      (p) =>
+        p.visibility === 'public' &&
+        p.status !== 'deprecated' &&
+        p.status !== 'draft' &&
+        p.status !== 'archived'
+    )
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
@@ -28,7 +34,13 @@ export function getFeaturedProducts(): Product[] {
  */
 export function getProductBySlug(slug: string): Product | undefined {
   const prod = products.find((p) => p.slug.toLowerCase() === slug.toLowerCase());
-  if (!prod || prod.visibility === 'private') {
+  if (
+    !prod ||
+    prod.visibility === 'private' ||
+    prod.status === 'draft' ||
+    prod.status === 'archived' ||
+    prod.status === 'deprecated'
+  ) {
     return undefined;
   }
   return prod;

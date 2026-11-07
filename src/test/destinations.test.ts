@@ -30,11 +30,9 @@ function product(overrides: Partial<Product>): Product {
 }
 
 describe('resolveDestination', () => {
-  it('marks subdomain destinations as external with safe rel', () => {
+  it('marks subdomain destinations as external without forcing a new tab', () => {
     const result = resolveDestination(product({}));
     expect(result.isExternal).toBe(true);
-    expect(result.target).toBe('_blank');
-    expect(result.rel).toBe('noopener noreferrer');
     expect(result.url).toBe('https://tool.progeni.live/');
   });
 

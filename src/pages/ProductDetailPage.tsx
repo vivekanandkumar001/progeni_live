@@ -189,8 +189,6 @@ const ProductDetailPage: React.FC = () => {
             {destination.isExternal ? (
               <a
                 href={destination.url}
-                target={destination.target}
-                rel={destination.rel}
                 className="btn-primary w-full"
               >
                 Open {product.name}
@@ -220,7 +218,7 @@ const ProductDetailPage: React.FC = () => {
               {product.name} works right in your browser — there is nothing to
               install.{' '}
               {destination.isExternal
-                ? 'It opens in a new tab and stays free to use.'
+                ? 'It opens on its product site and stays free to use.'
                 : 'It stays free to use.'}
             </p>
           </div>

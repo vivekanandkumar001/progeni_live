@@ -103,7 +103,7 @@ describe('HomePage', () => {
       .filter((n): n is string => Boolean(n));
 
     const benchCount = names.filter((n) => n === 'Progeni Bench').length;
-    const wakitCount = names.filter((n) => n === 'WaKit (WhatsSwift)').length;
+    const wakitCount = names.filter((n) => n === 'WaKit').length;
 
     expect(benchCount).toBe(1);
     expect(wakitCount).toBe(1);

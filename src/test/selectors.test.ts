@@ -79,6 +79,44 @@ vi.mock('../registry/products.json', () => ({
       createdAt: '2025-12-01T00:00:00Z',
       updatedAt: '2025-12-01T00:00:00Z',
     },
+    {
+      id: 'p-draft',
+      slug: 'draft-tool',
+      name: 'Draft Tool',
+      shortDescription: 'A draft tool description.',
+      categoryIds: ['c1'],
+      tags: [],
+      capabilities: [],
+      status: 'draft',
+      visibility: 'public',
+      hosting: 'standalone',
+      destination: { type: 'subdomain', url: 'https://draft.example.com/' },
+      icon: 'Wrench',
+      featured: true,
+      sortOrder: 5,
+      seo: { indexable: true },
+      createdAt: '2026-01-04T00:00:00Z',
+      updatedAt: '2026-01-04T00:00:00Z',
+    },
+    {
+      id: 'p-archived',
+      slug: 'archived-tool',
+      name: 'Archived Tool',
+      shortDescription: 'An archived tool description.',
+      categoryIds: ['c1'],
+      tags: [],
+      capabilities: [],
+      status: 'archived',
+      visibility: 'public',
+      hosting: 'standalone',
+      destination: { type: 'subdomain', url: 'https://archived.example.com/' },
+      icon: 'Wrench',
+      featured: true,
+      sortOrder: 6,
+      seo: { indexable: true },
+      createdAt: '2026-01-05T00:00:00Z',
+      updatedAt: '2026-01-05T00:00:00Z',
+    },
   ],
 }));
 
@@ -126,6 +164,12 @@ describe('getPublicProducts', () => {
   it('excludes deprecated products', () => {
     const slugs = getPublicProducts().map((p) => p.slug);
     expect(slugs).not.toContain('deprecated-tool');
+  });
+
+  it('excludes draft and archived products from discovery', () => {
+    const slugs = getPublicProducts().map((p) => p.slug);
+    expect(slugs).not.toContain('draft-tool');
+    expect(slugs).not.toContain('archived-tool');
   });
 
   it('includes active public products', () => {

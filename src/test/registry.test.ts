@@ -62,6 +62,31 @@ describe('ProductSchema', () => {
     expect(result.success).toBe(false);
   });
 
+  it('rejects insecure or credential-bearing external destinations', () => {
+    expect(
+      ProductSchema.safeParse({
+        ...validProduct,
+        destination: { type: 'subdomain', url: 'http://example.com' },
+      }).success
+    ).toBe(false);
+    expect(
+      ProductSchema.safeParse({
+        ...validProduct,
+        destination: { type: 'external', url: 'https://user:pass@example.com' },
+      }).success
+    ).toBe(false);
+  });
+
+  it('accepts safe same-origin path destinations', () => {
+    expect(
+      ProductSchema.safeParse({
+        ...validProduct,
+        hosting: 'integrated',
+        destination: { type: 'path', url: '/tools/example' },
+      }).success
+    ).toBe(true);
+  });
+
   it('rejects unsupported destination types', () => {
     const result = ProductSchema.safeParse({
       ...validProduct,
@@ -160,6 +185,23 @@ describe('validateRegistry', () => {
     );
     expect(result.valid).toBe(false);
     expect(result.errors.some((e) => e.includes('Duplicate category id'))).toBe(true);
+  });
+
+  it('rejects conflicting product destinations', () => {
+    const result = validateRegistry(
+      [
+        validProduct,
+        {
+          ...validProduct,
+          id: 'prod-other',
+          slug: 'other-product',
+          destination: { type: 'subdomain', url: 'https://test.progeni.live' },
+        },
+      ],
+      [validCategory]
+    );
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((error) => error.includes('conflicts with'))).toBe(true);
   });
 
   it('rejects invalid product records entirely', () => {

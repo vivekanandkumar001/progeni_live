@@ -4,7 +4,15 @@ import { getPublicProducts, getPublicCategories } from '../registry/selectors';
 export interface SearchResult {
   product: Product;
   score: number;
-  matchedField: 'name' | 'tag' | 'capability' | 'category' | 'description' | 'all';
+  matchedField:
+    | 'name'
+    | 'alias'
+    | 'tag'
+    | 'keyword'
+    | 'capability'
+    | 'category'
+    | 'description'
+    | 'all';
 }
 
 export interface SearchOptions {
@@ -106,7 +114,9 @@ export function searchCatalog(
     const normDesc = normalizeText(
       `${product.shortDescription} ${product.description || ''}`
     );
+    const normAliases = (product.aliases || []).map(normalizeText);
     const normTags = product.tags.map(normalizeText);
+    const normKeywords = (product.keywords || []).map(normalizeText);
     const normCapabilities = product.capabilities.map(normalizeText);
     const productCategoryNames = product.categoryIds
       .map((id) => categoryMap.get(id)?.name || '')
@@ -128,7 +138,23 @@ export function searchCatalog(
       matchedField = 'name';
     }
 
-    // 4. Check Tags
+    // 4. Explicit aliases and search keywords are registry-managed synonyms.
+    if (normAliases.some((alias) => alias === normQuery)) {
+      score += 400;
+      if (matchedField !== 'name') matchedField = 'alias';
+    } else if (normAliases.some((alias) => alias.includes(normQuery))) {
+      score += 220;
+      if (matchedField !== 'name') matchedField = 'alias';
+    }
+    if (normKeywords.some((keyword) => keyword === normQuery)) {
+      score += 250;
+      if (matchedField === 'description') matchedField = 'keyword';
+    } else if (normKeywords.some((keyword) => keyword.includes(normQuery))) {
+      score += 120;
+      if (matchedField === 'description') matchedField = 'keyword';
+    }
+
+    // 5. Check Tags
     let tagMatched = false;
     for (const tag of normTags) {
       if (tag === normQuery) {
@@ -143,7 +169,7 @@ export function searchCatalog(
       matchedField = 'tag';
     }
 
-    // 5. Check Capabilities
+    // 6. Check Capabilities
     let capMatched = false;
     for (const cap of normCapabilities) {
       if (cap.includes(normQuery)) {
@@ -155,7 +181,7 @@ export function searchCatalog(
       matchedField = 'capability';
     }
 
-    // 6. Check Categories
+    // 7. Check Categories
     let catMatched = false;
     for (const catName of productCategoryNames) {
       if (catName.includes(normQuery)) {
@@ -167,17 +193,19 @@ export function searchCatalog(
       matchedField = 'category';
     }
 
-    // 7. Check Description
+    // 8. Check Description
     if (normDesc.includes(normQuery)) {
       score += 40;
     }
 
-    // 8. Multi-token partial matches
+    // 9. Multi-token partial matches
     let tokenMatches = 0;
     for (const token of queryTokens) {
       if (
         normName.includes(token) ||
+        normAliases.some((alias) => alias.includes(token)) ||
         normTags.some((t) => t.includes(token)) ||
+        normKeywords.some((keyword) => keyword.includes(token)) ||
         normCapabilities.some((c) => c.includes(token)) ||
         normDesc.includes(token)
       ) {
@@ -191,11 +219,13 @@ export function searchCatalog(
       score += 100;
     }
 
-    // 9. Whole-word bonus — a boundary match is far more likely to be what
+    // 10. Whole-word bonus — a boundary match is far more likely to be what
     //    the person meant than a mid-word substring hit.
     if (
       hasWordMatch(normName, normQuery) ||
+      normAliases.some((alias) => hasWordMatch(alias, normQuery)) ||
       normTags.some((t) => hasWordMatch(t, normQuery)) ||
+      normKeywords.some((keyword) => hasWordMatch(keyword, normQuery)) ||
       normCapabilities.some((c) => hasWordMatch(c, normQuery))
     ) {
       score += 150;

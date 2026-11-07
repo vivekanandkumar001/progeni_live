@@ -43,6 +43,9 @@ const prefersReducedMotion = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+const useIsomorphicLayoutEffect =
+  typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 const ScrollManager: React.FC = () => {
   const location = useLocation();
   const navigationType = useNavigationType();
@@ -86,7 +89,7 @@ const ScrollManager: React.FC = () => {
     };
   }, []);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const key = location.key;
     const isFirstRender = lastPathname.current === '';
     const pathnameChanged = lastPathname.current !== location.pathname;

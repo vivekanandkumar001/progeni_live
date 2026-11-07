@@ -27,7 +27,9 @@ function toDate(value) {
 
 const publicCategories = categories.filter((c) => c.visibility === 'public');
 const publicProducts = products.filter(
-  (p) => p.visibility === 'public' && p.status !== 'deprecated'
+  (p) =>
+    p.visibility === 'public' &&
+    !['draft', 'deprecated', 'archived'].includes(p.status)
 );
 
 // The most recent change anywhere in the registry. Static pages have no

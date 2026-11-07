@@ -3,7 +3,7 @@
     "id": "cat-privacy-file",
     "slug": "privacy-file-tools",
     "name": "Private File & Craft Tools",
-    "description": "100% in-browser utilities for sticker sheets, labels, cross-stitch, embroidery, and private file adjustments with zero cloud uploads.",
+    "description": "Browser-based tools for sticker sheets, labels, cross-stitch, embroidery and file tasks. Processing and third-party data handling vary by tool.",
     "icon": "Layers",
     "sortOrder": 1,
     "visibility": "public"

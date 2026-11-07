@@ -68,8 +68,6 @@ const ContactPage: React.FC = () => {
                   {supportUrl ? (
                     <a
                       href={supportUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="group flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition-colors hover:border-indigo-300"
                     >
                       <span>

@@ -1,10 +1,52 @@
 import { z } from 'zod';
 
-export const DestinationSchema = z.object({
-  type: z.enum(['subdomain', 'path', 'external']),
-  url: z.string().url(),
-  canonicalUrl: z.string().url().optional(),
-});
+function isSafeHttpsUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
+export const DestinationSchema = z
+  .object({
+    type: z.enum(['subdomain', 'path', 'external']),
+    url: z.string().min(1),
+    canonicalUrl: z.string().optional(),
+  })
+  .superRefine((destination, context) => {
+    if (destination.type === 'path') {
+      if (
+        !destination.url.startsWith('/') ||
+        destination.url.startsWith('//') ||
+        destination.url.includes('\\')
+      ) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['url'],
+          message: 'Path destinations must be safe, same-origin absolute paths.',
+        });
+      }
+    } else if (!isSafeHttpsUrl(destination.url)) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['url'],
+        message: 'External destinations must use HTTPS and contain no credentials.',
+      });
+    }
+
+    if (
+      destination.canonicalUrl !== undefined &&
+      !isSafeHttpsUrl(destination.canonicalUrl)
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['canonicalUrl'],
+        message: 'Canonical URLs must use HTTPS and contain no credentials.',
+      });
+    }
+  });
 
 export const ProductSeoSchema = z.object({
   title: z.string().optional(),
@@ -13,11 +55,13 @@ export const ProductSeoSchema = z.object({
 });
 
 export const ProductStatusSchema = z.enum([
+  'draft',
   'development',
   'beta',
   'active',
   'maintenance',
   'deprecated',
+  'archived',
 ]);
 
 export const ProductVisibilitySchema = z.enum([
@@ -38,8 +82,11 @@ export const ProductSchema = z.object({
   shortDescription: z.string().min(10, 'Short description must be at least 10 chars'),
   description: z.string().optional(),
   categoryIds: z.array(z.string()).min(1, 'At least one category is required'),
+  aliases: z.array(z.string().min(1)).default([]),
   tags: z.array(z.string()).default([]),
+  keywords: z.array(z.string().min(1)).default([]),
   capabilities: z.array(z.string()).default([]),
+  supportedLocales: z.array(z.string().min(2)).default(['en']),
   status: ProductStatusSchema,
   visibility: ProductVisibilitySchema,
   hosting: ProductHostingSchema,

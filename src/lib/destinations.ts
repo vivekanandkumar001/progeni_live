@@ -3,8 +3,6 @@ import { Product } from '../registry/schemas';
 export interface DestinationResolution {
   url: string;
   isExternal: boolean;
-  target?: '_blank';
-  rel?: 'noopener noreferrer';
   displayText: string;
 }
 
@@ -43,8 +41,6 @@ export function resolveDestination(product: Product): DestinationResolution {
     return {
       url,
       isExternal: true,
-      target: '_blank',
-      rel: 'noopener noreferrer',
       displayText: `Launch ${product.name}`,
     };
   }
