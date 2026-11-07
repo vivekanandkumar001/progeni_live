@@ -3,13 +3,17 @@
     "id": "prod-bench",
     "slug": "bench",
     "name": "Progeni Bench",
-    "shortDescription": "Progeni Bench brings 120 private browser tools for images, audio, files, data, crafts and productivity — running locally with no server uploads.",
-    "description": "Progeni Bench is a private, client-side toolkit of 120 utilities: 30 legacy file, craft and data tools plus 42 image tools and 48 audio tools. It includes Avery label makers, sticker sheets, image resize/convert/compress, audio conversion, trimming, loudness analysis and recording, subtitle timing repair, CSV and vCard cleaning, QR and barcode generators, SVG optimisation and more. Every tool processes files in browser memory using Web Workers, Canvas, Web Audio and FFmpeg.wasm, so files are never uploaded to a server.",
+    "shortDescription": "Progeni Bench brings together browser tools for images, audio, files, data, crafts and productivity. Most tools process files locally; PDF Translator sends extracted text to DeepL.",
+    "description": "Progeni Bench is a browser-based collection of utilities for image, audio, file, data, craft and productivity tasks. It includes Avery label makers, sticker sheets, image resizing and conversion, audio editing and analysis, subtitle timing repair, CSV and vCard cleaning, QR and barcode generators, SVG optimisation and more. Most tools process files locally in the browser. PDF Translator is an exception: the original PDF stays in the browser, while extracted text is sent to Bench's translation service and forwarded to DeepL.",
     "categoryIds": [
       "cat-privacy-file",
       "cat-media",
       "cat-data",
       "cat-productivity"
+    ],
+    "aliases": [
+      "Bench",
+      "Progeni utilities"
     ],
     "tags": [
       "bench",
@@ -24,13 +28,18 @@
       "cropper",
       "audio converter",
       "loudness",
-      "zero-upload",
       "client-side"
     ],
+    "keywords": [
+      "pdf translator",
+      "document translation",
+      "DeepL translation",
+      "local image tools",
+      "browser audio tools"
+    ],
     "capabilities": [
-      "30 legacy utilities for labels, stickers, cross-stitch and diamond painting, subtitles, CSV and vCard cleanup, bookmarks, SVG and photos",
-      "42 image utilities for resizing, cropping, compressing, converting, watermarking, stripping metadata and optimising SVG",
-      "48 audio utilities for converting, trimming, joining, normalising, loudness (LUFS) analysis, recording and applying effects",
+      "Image tools for resizing, cropping, compressing, converting, watermarking, stripping metadata and optimising SVG",
+      "Audio tools for converting, trimming, joining, normalising, loudness analysis, recording and applying effects",
       "Create printable Avery label sheets and custom label layouts from CSV or pasted data",
       "Build sticker sheets with print-ready PNG, PDF and SVG exports",
       "Create cross-stitch, embroidery and diamond-painting patterns from photos",
@@ -40,7 +49,10 @@
       "Generate and clean QR codes, barcodes and SVG assets",
       "Find duplicate photos and rank burst shots using local image analysis",
       "Record, convert, trim, join and analyse audio in the browser",
-      "All processing happens locally in the browser; there is no upload endpoint and no account"
+      "Translate PDF text through DeepL; extracted text leaves the browser for translation, while PDF pages stay local"
+    ],
+    "supportedLocales": [
+      "en"
     ],
     "status": "active",
     "visibility": "public",
@@ -55,8 +67,8 @@
     "featured": true,
     "sortOrder": 1,
     "seo": {
-      "title": "Progeni Bench — 120 Private Browser Tools for Images, Audio, Files and Data",
-      "description": "Progeni Bench includes 120 free, private in-browser utilities for images, audio, labels, CSV, subtitles and more. Runs locally with no server uploads.",
+      "title": "Progeni Bench — Browser Tools for Images, Audio, Files and Data",
+      "description": "Progeni Bench offers browser tools for images, audio, labels, CSV, subtitles and more. Most process files locally; PDF Translator sends extracted text to DeepL.",
       "indexable": true
     },
     "createdAt": "2024-09-15T00:00:00Z",
@@ -72,6 +84,10 @@
       "cat-communication",
       "cat-media"
     ],
+    "aliases": [
+      "WaKit",
+      "WhatsApp toolkit"
+    ],
     "tags": [
       "wakit",
       "whatsswift",
@@ -85,11 +101,19 @@
       "webassembly",
       "messaging"
     ],
+    "keywords": [
+      "whatsapp video status",
+      "message without saving contact",
+      "whatsapp audio compression"
+    ],
     "capabilities": [
       "Split videos into exact 30-second WhatsApp status clips with lossless stream copy",
       "Open a WhatsApp chat from a phone number without saving it to contacts",
       "Generate wa.me links and QR codes, including Wi-Fi and payment payloads",
       "Compress audio to the 16 MB WhatsApp document limit with local FFmpeg transcoding"
+    ],
+    "supportedLocales": [
+      "en"
     ],
     "status": "active",
     "visibility": "public",
@@ -108,6 +132,63 @@
       "indexable": true
     },
     "createdAt": "2024-10-01T00:00:00Z",
+    "updatedAt": "2026-10-24T00:00:00Z"
+  },
+  {
+    "id": "prod-atlas",
+    "slug": "atlas",
+    "name": "Progeni Atlas",
+    "shortDescription": "Autonomous, enterprise-grade technical screening and live multi-modal interviewing platform",
+    "description": "Progeni Atlas is a real-time conversational technical interview platform designed to simulate an authentic 1-on-1 interview with a Senior Technical Lead. Featuring low-latency neural speech, multi-modal proctoring, synchronized code execution, and rubric-driven candidate assessments.",
+    "categoryIds": [
+      "cat-ai"
+    ],
+    "aliases": [
+      "Atlas",
+      "Progeni technical screening"
+    ],
+    "tags": [
+      "atlas",
+      "technical interview",
+      "ai",
+      "proctoring",
+      "screening"
+    ],
+    "keywords": [
+      "technical screening",
+      "ai interview",
+      "conversational AI",
+      "multi-modal interview"
+    ],
+    "capabilities": [
+      "Low-latency neural speech synthesis",
+      "Multi-modal proctoring ( gaze and presence tracking )",
+      "Synchronized code execution environment",
+      "Rubric-driven candidate assessments",
+      "Real-time closed captions",
+      "Audio waveform visualizers"
+    ],
+    "supportedLocales": [
+      "en"
+    ],
+    "status": "active",
+    "visibility": "public",
+    "hosting": "standalone",
+    "destination": {
+      "type": "subdomain",
+      "url": "https://atlas.progeni.live/",
+      "canonicalUrl": "https://atlas.progeni.live/"
+    },
+    "supportUrl": "https://atlas.progeni.live/contact",
+    "icon": "Sparkles",
+    "featured": true,
+    "sortOrder": 3,
+    "seo": {
+      "title": "Progeni Atlas — AI-Powered Technical Screening & Live Multi-Modal Interviewing",
+      "description": "Progeni Atlas is a real-time conversational technical interview platform with low-latency neural speech, multi-modal proctoring, and rubric-driven candidate assessments.",
+      "indexable": true
+    },
+    "createdAt": "2026-10-24T00:00:00Z",
     "updatedAt": "2026-10-24T00:00:00Z"
   }
 ]
