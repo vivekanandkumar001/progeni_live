@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useId } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, X } from 'lucide-react';
+import { Search, X, TrendingUp } from 'lucide-react';
 import { searchCatalog } from '../../lib/search';
 import { IconRenderer } from '../IconRenderer';
 
@@ -14,9 +14,18 @@ interface SearchBoxProps {
   onNavigate?: () => void;
 }
 
+const POPULAR_SEARCHES = [
+  'Avery Labels',
+  'WhatsApp Splitter',
+  'PDF Translator',
+  'AI Interview',
+  'Audio Converter',
+  'CSV Cleaner',
+];
+
 /**
- * Universal search input with live suggestions, keyboard navigation,
- * a clear button, and shareable ?q= URLs.
+ * Flipkart-style universal search input with soft ice-blue surface,
+ * live suggestions, keyboard navigation, clear button, and shareable ?q= URLs.
  */
 const SearchBox: React.FC<SearchBoxProps> = ({
   submitPath = '/tools',
@@ -110,7 +119,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
     ? 'h-14 text-base sm:text-lg'
     : 'h-11 text-sm';
   const buttonSize = large
-    ? 'h-10 rounded-xl px-4 text-sm'
+    ? 'h-10 rounded-xl px-5 text-sm'
     : 'h-8 rounded-lg px-3.5 text-xs';
   const clearSize = large ? 'h-10 w-10' : 'h-8 w-8';
   const clearIconSize = large ? 'h-4 w-4' : 'h-3.5 w-3.5';
@@ -127,14 +136,13 @@ const SearchBox: React.FC<SearchBoxProps> = ({
         }}
       >
         {/*
-          One control, not a field with buttons floating on top of it. The
-          border, the focus ring and the background live on the wrapper, and
-          the input and the buttons sit side by side inside it — so the
-          buttons can never overlap the text, whatever the query length.
+          Flipkart-style search control with signature soft ice-blue surface,
+          crisp blue focus state, integrated buttons in normal flow, and
+          high-contrast search trigger.
         */}
-        <div className="relative flex items-center rounded-2xl border border-slate-300 bg-white shadow-sm ring-1 ring-transparent transition-colors focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/15">
+        <div className="relative flex items-center rounded-xl sm:rounded-2xl border border-slate-200/90 bg-[#f0f5ff] shadow-sm transition-all duration-200 hover:border-blue-400/80 hover:bg-[#e9f0fe] focus-within:border-[#2874f0] focus-within:bg-white focus-within:shadow-md focus-within:ring-4 focus-within:ring-[#2874f0]/15">
           <Search
-            className={`pointer-events-none absolute ${iconPos} top-1/2 -translate-y-1/2 text-slate-400 ${iconClass}`}
+            className={`pointer-events-none absolute ${iconPos} top-1/2 -translate-y-1/2 text-[#2874f0] ${iconClass}`}
             aria-hidden="true"
           />
           <input
@@ -153,8 +161,8 @@ const SearchBox: React.FC<SearchBoxProps> = ({
             }
             autoComplete="off"
             spellCheck={false}
-            placeholder="What would you like to do today?"
-            className={`min-w-0 flex-1 border-0 bg-transparent pl-12 pr-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-0 [&::-webkit-search-cancel-button]:hidden ${inputSize}`}
+            placeholder="Search for tools, features, categories and more..."
+            className={`min-w-0 flex-1 border-0 bg-transparent pl-12 pr-2 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-0 [&::-webkit-search-cancel-button]:hidden ${inputSize}`}
             onChange={(e) => {
               setQuery(e.target.value);
               setShowSuggestions(true);
@@ -163,7 +171,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={handleKeyDown}
           />
-          <div className="flex shrink-0 items-center gap-1 pr-2">
+          <div className="flex shrink-0 items-center gap-1.5 pr-2">
             {query && (
               <button
                 type="button"
@@ -173,7 +181,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
                   setActiveIndex(-1);
                   inputRef.current?.focus();
                 }}
-                className={`flex ${clearSize} items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                className={`flex ${clearSize} items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-200/60 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2874f0]`}
               >
                 <X className={clearIconSize} aria-hidden="true" />
               </button>
@@ -181,7 +189,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
             <button
               type="submit"
               aria-label="Search"
-              className={`inline-flex items-center justify-center rounded-lg bg-indigo-600 font-semibold text-white transition-colors hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${buttonSize}`}
+              className={`inline-flex items-center justify-center gap-1.5 rounded-lg sm:rounded-xl bg-[#2874f0] font-semibold text-white shadow-sm transition-all hover:bg-[#1a62d6] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2874f0] ${buttonSize}`}
             >
               <span className="hidden sm:inline">Search</span>
               <Search className="h-4 w-4 sm:hidden" aria-hidden="true" />
@@ -190,14 +198,17 @@ const SearchBox: React.FC<SearchBoxProps> = ({
         </div>
       </form>
 
-      {/* Live suggestions */}
+      {/* Live suggestions dropdown */}
       {showSuggestions && suggestions.length > 0 && (
         <ul
           id={listboxId}
           role="listbox"
           aria-label="Search suggestions"
-          className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+          className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-2xl ring-1 ring-black/5"
         >
+          <div className="border-b border-slate-100 bg-[#f8faff] px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            Suggested Tools
+          </div>
           {suggestions.map((product, index) => (
             <li
               key={product.id}
@@ -207,22 +218,27 @@ const SearchBox: React.FC<SearchBoxProps> = ({
             >
               <button
                 type="button"
-                className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
-                  index === activeIndex ? 'bg-indigo-50' : 'hover:bg-slate-50'
+                className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors ${
+                  index === activeIndex ? 'bg-[#f0f5ff] text-blue-900' : 'hover:bg-[#f0f5ff]/60'
                 }`}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => goToProduct(product.slug)}
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
-                  <IconRenderer name={product.icon} className="h-4 w-4" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold text-slate-900">
-                    {product.name}
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#2874f0]">
+                    <IconRenderer name={product.icon} className="h-4 w-4" />
                   </span>
-                  <span className="block truncate text-xs text-slate-500">
-                    {product.shortDescription}
-                  </span>
+                  <div className="min-w-0">
+                    <span className="block truncate text-sm font-semibold text-slate-900">
+                      {product.name}
+                    </span>
+                    <span className="block truncate text-xs text-slate-500">
+                      {product.shortDescription}
+                    </span>
+                  </div>
+                </div>
+                <span className="hidden shrink-0 items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-600 sm:inline-flex">
+                  in {product.categoryIds[0]?.replace('cat-', '') || 'Tools'}
                 </span>
               </button>
             </li>
@@ -230,27 +246,56 @@ const SearchBox: React.FC<SearchBoxProps> = ({
         </ul>
       )}
 
+      {/* Flipkart-style Popular Searches when query is empty */}
+      {showSuggestions && trimmedQuery.length < MIN_SUGGESTION_LENGTH && (
+        <div
+          id={listboxId}
+          role="listbox"
+          aria-label="Search suggestions"
+          className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xl ring-1 ring-black/5"
+        >
+          <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <TrendingUp className="h-3.5 w-3.5 text-[#2874f0]" />
+            Popular Searches
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {POPULAR_SEARCHES.map((term) => (
+              <button
+                key={term}
+                type="button"
+                onClick={() => {
+                  setQuery(term);
+                  submitSearch(term);
+                }}
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-[#f0f5ff] hover:text-[#2874f0]"
+              >
+                <Search className="h-3 w-3 text-slate-400" />
+                {term}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* No matches yet */}
       {showSuggestions &&
         trimmedQuery.length > 0 &&
         trimmedQuery.length >= MIN_SUGGESTION_LENGTH &&
         suggestions.length === 0 && (
-          <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-lg">
-            No tools match &ldquo;{trimmedQuery}&rdquo;. Press Enter to search anyway.
+          <div className="absolute z-50 mt-2 w-full rounded-2xl border border-slate-200 bg-white p-5 text-center text-sm text-slate-600 shadow-2xl">
+            <p>No tools match &ldquo;{trimmedQuery}&rdquo;</p>
+            <button
+              type="button"
+              onClick={() => submitSearch(trimmedQuery)}
+              className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-[#2874f0] hover:underline"
+            >
+              Search all tools for &ldquo;{trimmedQuery}&rdquo; &rarr;
+            </button>
           </div>
         )}
-
-      {/* Too-short query */}
-      {showSuggestions && trimmedQuery.length === 1 && (
-        <div
-          role="status"
-          className="absolute z-50 mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-lg"
-        >
-          Keep typing &mdash; suggestions start at {MIN_SUGGESTION_LENGTH} characters.
-        </div>
-      )}
     </div>
   );
 };
 
 export default SearchBox;
+

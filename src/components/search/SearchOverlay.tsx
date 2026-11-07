@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { X } from 'lucide-react';
+import { X, Search } from 'lucide-react';
 import SearchBox from './SearchBox';
 
 interface SearchOverlayProps {
@@ -99,10 +99,10 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({
   // fixed-position descendants. Rendering through a portal keeps the panel
   // anchored to the viewport instead of to the header.
   return createPortal(
-    <div className="fixed inset-0 z-[100]">
+    <div className="fixed inset-0 z-[100] overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -112,30 +112,42 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({
         role="dialog"
         aria-modal="true"
         aria-label="Search tools"
-        className="relative mx-auto mt-[10vh] w-[calc(100%-2rem)] max-w-2xl"
+        className="relative mx-auto mt-6 sm:mt-12 w-[calc(100%-1.5rem)] max-w-3xl"
       >
-        <div className="rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl sm:p-4">
-          <div className="flex items-start gap-2">
-            <div className="min-w-0 flex-1">
-              <SearchBox large submitPath="/tools" autoFocus onNavigate={onClose} />
+        <div className="overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl ring-1 ring-black/5">
+          {/* Header bar with title & close button */}
+          <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-5 py-3.5">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 text-[#2874f0]">
+                <Search className="h-3.5 w-3.5" aria-hidden="true" />
+              </span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                Search Progeni Tools
+              </span>
             </div>
             <button
               ref={closeRef}
               type="button"
               onClick={onClose}
               aria-label="Close search"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-200/60 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2874f0]"
             >
-              <X className="h-5 w-5" aria-hidden="true" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-3 border-t border-slate-100 px-1 pt-3 text-xs text-slate-500">
-            <span className="shrink-0">
-              <kbd className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans">
+          {/* Search box container */}
+          <div className="p-4 sm:p-5">
+            <SearchBox large submitPath="/tools" autoFocus onNavigate={onClose} />
+          </div>
+
+          {/* Footer bar */}
+          <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/50 px-5 py-3 text-xs text-slate-500">
+            <span className="shrink-0 flex items-center gap-1.5">
+              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-sans text-[11px] font-semibold text-slate-500 shadow-sm">
                 Esc
-              </kbd>{' '}
-              to close
+              </kbd>
+              <span>to close</span>
             </span>
             <button
               type="button"
@@ -143,9 +155,9 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({
                 onClose();
                 navigate('/tools');
               }}
-              className="truncate font-medium text-indigo-600 transition-colors hover:text-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="truncate font-semibold text-[#2874f0] transition-colors hover:text-[#1a62d6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2874f0]"
             >
-              Browse all tools
+              Browse all tools &rarr;
             </button>
           </div>
         </div>
