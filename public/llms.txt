@@ -1,0 +1,27 @@
+# Progeni
+
+> One Platform. Many Possibilities. Free, browser-first digital tools for productivity, media, communication, documents, and technical screening.
+
+## Core Products
+
+- [Progeni Bench](https://bench.progeni.live/): Browser-based collection of utilities for images, audio, files, data, crafts, and Avery labels. Files process locally in the browser with WebAssembly; PDF translation powered by DeepL.
+- [WaKit](https://wakit.progeni.live/): Client-side WhatsApp productivity toolkit: split 30-second status videos, open chats without saving contacts, generate wa.me QR/links, and compress audio to 16 MB.
+- [Progeni Atlas](https://atlas.progeni.live/): Autonomous, enterprise-grade AI technical screening and live multi-modal interviewing platform with synchronized code execution and neural speech.
+
+## Directory & Categories
+
+- [All Tools](https://progeni.live/tools): Full directory of tools across all categories.
+- [What's New](https://progeni.live/new): Latest releases and recently updated utilities.
+- [Communication & Messaging](https://progeni.live/categories/communication-messaging): Messaging utilities, WhatsApp status splitters, and direct chat links.
+- [Media, Audio & Video](https://progeni.live/categories/media-audio-video): In-browser audio editing, video conversion, and media compression.
+- [Privacy & File Tools](https://progeni.live/categories/privacy-file-tools): Private, zero-telemetry local file and document tools.
+- [Developer & Data](https://progeni.live/categories/developer-data): CSV, vCard, QR codes, barcodes, and data utilities.
+- [Productivity](https://progeni.live/categories/productivity): Avery 5160 labels, sticker sheet builders, and workflow tools.
+- [AI Experiences](https://progeni.live/categories/ai-experiences): Real-time conversational AI and smart agent workflows.
+
+## Information & Legal
+
+- [About Progeni](https://progeni.live/about): Mission, values, and architectural principles.
+- [Contact Support](https://progeni.live/contact): Support email and developer contacts.
+- [Privacy Policy](https://progeni.live/privacy): Data privacy commitments and client-side processing policies.
+- [Terms of Service](https://progeni.live/terms): Terms of use for the Progeni ecosystem.
